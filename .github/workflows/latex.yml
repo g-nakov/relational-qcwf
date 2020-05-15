@@ -10,3 +10,23 @@ jobs:
         uses: xu-cheng/latex-action@v2
         with:
           root_file: parametric.tex
+      - name: stash pdf
+        run: |
+          mv parametric.pdf $HOME
+      - name: checkout document_releases branch
+        uses: actions/checkout@v2
+        with:
+          ref: document_releases
+      - name: commit pdf
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          mv $HOME/parametric.pdf $(pwd) # bring it back 
+          git add parametric.pdf
+          git commit -m "updated document"
+      - name:  push pdf
+        uses: ad-m/github-push-action@v0.5.0
+        with: 
+          branch: document_releases 
+          force: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
