@@ -1,1 +1,134 @@
-../preamble.tex
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{xspace}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage{enumitem}
+\usepackage{adjustbox}
+\usepackage{stmaryrd}
+\usepackage{mathrsfs}  
+\usepackage[left=5em, right=5em]{geometry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Link colors %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+
+\hypersetup{
+  colorlinks,
+  citecolor=black,
+  filecolor=black,
+  linkcolor=black,
+  urlcolor=black,
+  linktoc=all
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Bibliography %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[backend=biber, isbn=false, doi=false, style=numeric, 
+citestyle=numeric, giveninits=true]{biblatex}
+\bibliography{library.bib}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Theorem enivornment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%use continious uniform numbering
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lemma}[thm]{Lemma}
+\newtheorem*{claim}{Claim}
+\newtheorem*{fact}{Fact}
+
+\theoremstyle{definition}
+\newtheorem{remark}[thm]{Remark}
+\newtheorem{definition}[thm]{Definition}
+\newtheorem{example}[thm]{Example}
+
+%% remove section prefix
+\renewcommand{\thethm}{\arabic{thm}}
+
+% \makeatletter
+%\def\th@definition{%
+%  \thm@notefont{\normalfont\itshape}
+%}
+%\makeatother
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Always math %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+\let\ea\expandafter
+
+\def\mdef#1#2{\ea\ea\ea\gdef\ea\ea\noexpand#1\ea{\ea\ensuremath\ea{#2}\xspace}}
+\def\alwaysmath#1{\ea\ea\ea\global\ea\ea\ea\let\ea\ea\csname your@#1\endcsname\csname #1\endcsname
+  \ea\def\csname #1\endcsname{\ensuremath{\csname your@#1\endcsname}\xspace}}
+
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Letter decorations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+
+\newcount\foreachcount
+
+\def\foreachletter#1#2#3{\foreachcount=#1
+  \ea\loop\ea\ea\ea#3\@alph\foreachcount
+  \advance\foreachcount by 1
+  \ifnum\foreachcount<#2\repeat}
+
+\def\foreachLetter#1#2#3{\foreachcount=#1
+  \ea\loop\ea\ea\ea#3\@Alph\foreachcount
+  \advance\foreachcount by 1
+  \ifnum\foreachcount<#2\repeat}
+
+% Particular commands for typefaces, sometimes with the first letter
+% different.
+\def\autofmt@n#1\autofmt@end{\mathrm{#1}}
+\def\autofmt@b#1\autofmt@end{\mathbf{#1}}
+\def\autofmt@d#1#2\autofmt@end{\mathbb{#1}\mathsf{#2}}
+\def\autofmt@c#1#2\autofmt@end{\mathcal{#1}\mathit{#2}}
+\def\autofmt@s#1#2\autofmt@end{\mathscr{#1}\mathit{#2}}
+\def\autofmt@f#1\autofmt@end{\mathsf{#1}}
+%\def\autofmt@k#1\autofmt@end{\mathfrak{#1}}
+%% Particular commands for decorations.
+\def\autofmt@u#1\autofmt@end{\underline{\smash{\mathsf{#1}}}}
+\def\autofmt@U#1\autofmt@end{\underline{\underline{\smash{\mathsf{#1}}}}}
+\def\autofmt@h#1\autofmt@end{\widehat{#1}}
+\def\autofmt@r#1\autofmt@end{\overline{#1}}
+\def\autofmt@t#1\autofmt@end{\widetilde{#1}}
+\def\autofmt@k#1\autofmt@end{\check{#1}}
+
+% Defining multi-letter commands.  Use this like so:
+% \autodefs{\bSet\cCat\cCAT\kBicat\lProf}
+\def\auto@drop#1{}
+\def\autodef#1{\ea\ea\ea\@autodef\ea\ea\ea#1\ea\auto@drop\string#1\autodef@end}
+\def\@autodef#1#2#3\autodef@end{%
+  \ea\def\ea#1\ea{\ea\ensuremath\ea{\csname autofmt@#2\endcsname#3\autofmt@end}\xspace}}
+\def\autodefs@end{blarg!}
+\def\autodefs#1{\@autodefs#1\autodefs@end}
+\def\@autodefs#1{\ifx#1\autodefs@end%
+  \def\autodefs@next{}%
+  \else%
+  \def\autodefs@next{\autodef#1\@autodefs}%
+  \fi\autodefs@next}
+
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Miscellaneous %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\def\define{:=}
+
+\let\comp\circ
+
+\def\pow{\mathcal{P}}
+\newcommand{\carr}[1]{\ensuremath{|#1|}}
+
+\newcommand{\ob}[1]{\ensuremath{Ob(#1)}}
+
+
+\renewcommand{\phi}{\varphi}
+\alwaysmath{Gamma}
+
+\setlength{\parindent}{0pt}
