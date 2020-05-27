@@ -132,7 +132,7 @@ Let $\Gamma, \Delta \in \ob\cRGph$, define:
   \begin{align*}
     \forall \gamma \in \Gamma\O.\check {S\rfl} (M\O(\gamma)) &= M\R(\Gamma\rfl(\gamma))\\
     \forall \gamma \in \Gamma\R.\check {S\src} (M\R(\gamma)) &= M\O(\Gamma\src(\gamma))\\
-    \forall \gamma \in \Gamma\R.\check {S\tgt} (M\R(\gamma)) &= M\O(\Gamma\tgt(\gamma))
+    \forall \gamma \in \Gamma\R.\check {S\tgt} (M\R(\gamma)) &= M\O(\Gamma\tgt(\gamma)) 
   \end{align*}
   
   \item given $f : \Gamma \to \Delta$, substitutions in types and terms is a precomposition with f on the object and relation components of types and terms respectively. Clearly, these operations are compatible with identity and composition in $\cRGph$
@@ -187,7 +187,50 @@ We simultenously recall the definition of a QCwF and add structure to our CwF.
 
 \paragraph{Universe of small types}
 
-\paragraph{Dependent function types}
+\paragraph{Dependent function types in 1-fragment}
+Given an internal reflexive graph $\Gamma$, $S \in Ty(\Gamma)$, $T \in Ty(\Gamma.S)$, $\rho \in R$, define $\Pi\rho S T \in Ty(\Gamma)$ as the tuple of:
+\begin{itemize}[noitemsep]
+  \item Object assembly. Let $\gamma \in \carr{\Gamma\O}$
+    \begin{align*}
+      |(\Pi \rho S T)\O|(\gamma) \define \{ (f\O,& f\R) | \\
+      & f\O : \forall s \in S\O(\gamma).T\O(\gamma, s),\\
+      & \exists a \in \algA\, \forall s \in \carr{S\O(\gamma)}, b \in \algA.\\
+      & \hspace{3em} b \vDash_{S\O(\gamma)} s \implies a . !_\rho b \vDash_{T\O(\gamma,s)} f\O(s) \\
+      & f\R : \forall r \in S\R(\Gamma\rfl(\gamma)). T\R(\Gamma\rfl(\gamma), r),\\
+      & \exists a \in \algA\, \forall r \in \carr{S\R(\Gamma\rfl(\gamma))}, b \in \algA.\\ 
+      & \hspace{3em} b \vDash_{S\R(\Gamma\rfl(\gamma))} r \implies a . !_\rho b \vDash_{T\R(\Gamma\rfl(\gamma),r)} f\R(r),\\
+      & \forall s \in S\O(\gamma). T\rfl(\gamma, s)(f\O (s)) = f\R(S\rfl(\gamma)(s)),\\
+      & \forall r \in S\R(\Gamma\rfl(\gamma)). T\src(\Gamma\rfl(\gamma),r)(f\R (r)) = f\O(S\src(\Gamma\rfl(\gamma))(r)),\\
+      & \forall r \in S\R(\Gamma\rfl(\gamma)). T\tgt(\Gamma\rfl(\gamma),r)(f\R (r)) = f\O(S\tgt(\Gamma\rfl(\gamma))(r))  \}
+    \end{align*}
+    
+    $ a \vDash_{(\Pi \rho S T)\O(\gamma)} (f\O, f\R)$ iff $a = [a_o, a_r]$ where the realizers $a_o, a_r$ are given by the existential statements above.
+    
+   \item Relation assembly. Let $\gamma \in \carr{\Gamma\R}$
+     \begin{align*}
+       |(\Pi \rho S T)\R|(\gamma) \define \{( (f\O^{src},& \, f\R^{src}), (f\O^{tgt}, f\O^{tgt}), r)  | \\
+       & (f\O^{src},f\R^{src}) \in (\Pi\rho S T)\O(\Gamma\src(\gamma)),\\
+       & (f\O^{tgt},f\R^{tgt}) \in (\Pi\rho S T)\O(\Gamma\tgt(\gamma)),\\
+       & r : \forall s \in S\R(\gamma). T\R(\gamma, s),\\
+       & \exists a \in \algA\, \forall s \in \carr{S\R(\gamma)}, b \in \algA. b \vDash_{S\R(\gamma)} s \implies a . !_\rho b \vDash_{T\R(\gamma,s)} r(s),\\       
+       & \forall s \in S\R(\gamma). T\src(\gamma, s)( r (s)) = f\O^{src}(S\src(\gamma)(s)),\\
+       & \forall s \in S\R(\gamma). T\tgt(\gamma, s)( r (s)) = f\O^{tgt}(S\tgt(\gamma)(s)) \}
+     \end{align*}
+   \item collections of morphisms:\\
+   $(\Pi \rho S T)\rfl(\gamma)(f\O, f\R) \define ((f\O, f\R), (f\O, f\R), f\R)$ for $\gamma \in \Gamma\O$\\
+   $(\Pi \rho S T)\src(\gamma)(f^{src}, f^{tgt}, r) \define f^{src}$ for $\gamma \in \Gamma\R$ \\
+   $(\Pi \rho S T)\src(\gamma)(f^{src}, f^{tgt}, r) \define f^{tgt}$ for $\gamma \in \Gamma\R$ \\
+   These collections satisfy the identity conditions in \cref{def:fam-refl-graphs}.\\
+   Suppose we specialize $\algA$ to the graph model, $\algD$. Then we can find uniform realizers for the morphisms in each collection. Assuming that syntactic tupling in the BCI-algebra is represented using right-nested tuples in $\algD$, then:
+   
+   \subitem $a\rfl \define \{ \langle \langle x_o, \langle x_r, 0 \rangle \rangle,  \langle \langle x_o, \langle x_r, 0 \rangle \rangle,  \langle \langle x_o, \langle x_r, 0 \rangle \rangle, x_r \rangle \rangle \rangle | x_o, x_r \in D \}$
+   
+   \subitem $a\src \define \{ \langle \langle x\src,  \langle x\tgt, \langle x_r , 0 \rangle \rangle \rangle  , \langle x\src , 0 \rangle \rangle  | x\src, x\tgt, x_r \in D\}$
+   
+   
+   \subitem $a\tgt \define \{ \langle \langle x\src,  \langle x\tgt, \langle x_r , 0 \rangle \rangle \rangle  , \langle x\tgt , 0 \rangle \rangle  | x\src, x\tgt, x_r \in D\}$
+   
+\end{itemize}
 
 \paragraph{Dependent pairs}
 
