@@ -174,7 +174,7 @@ Given a usage semiring $R$, a $R$-QCwF consists of:
   \item Given $\Gamma \in \cL$, $S \in Ty(U\Gamma)$, there exists:
   \subitem a morphism $p_{\Gamma.S} : \Gamma. 0S \to \Gamma$, s.t. $U(p_{\Gamma.S})=p_{U\Gamma.S}$
   \subitem an element $v_{\Gamma.S} \in RTm(0\Gamma.1S, S\{p_{U\Gamma.S}\})$, s.t. $U(v_{\Gamma.S})=v_{U\Gamma.S}$
-  \subitem a morphism $wk(f, \rho S) : \Gamma.\rho S\{Uf\} \to \Delta.\rho S$ for each $f : \Gamma \to \Delta$, s.t. $U(wk(f, \rho S))=wk(Uf, S)$
+  \subitem a morphism $wk(f, \rho S') : \Gamma.\rho S'\{Uf\} \to \Delta.\rho S'$ for each $f : \Gamma \to \Delta$, $S' \in Ty(U\Gamma, \Delta)$ s.t. $U(wk(f, \rho S'))=wk(Uf, S')$
   \subitem let $\Gamma_1, \Gamma_2 \in \cL$, s.t $U\Gamma_1 = U\Gamma_2$ and $M \in RTm(\Gamma_2, S)$. There is a morphism $\overline{\rho M} : \Gamma_1 + \rho \Gamma_2 \to \Gamma_1 . \rho S$, s.t $U(\overline{\rho M})= \overline{UM}$
   \subitem a morphism $\overline{M} : \Gamma \to \Gamma.0S$ for $M \in Tm(U\Gamma, S)$, s.t. $U(\overline{M})=\overline{M}$.
 \end{enumerate}
@@ -222,7 +222,19 @@ The underlying function part of the above-defined natural transformations is giv
 %$[ !_\pi a, !_{\pi \rho} s] \mapsto !_\pi [a , !_\rho s]$
 %$ext_+$ - $[[a, b], !_{\rho_1 + \rho_2} c] \mapsto [[a, !\rho_1 c], [b, !\rho_2 c]]$
 
-Finally, we construct the morphisms, listed in 7).
+Finally, we construct the morphisms, listed in 7:
+\begin{itemize}
+  \item $p_{\Gamma.S}: \Gamma. 0 S \to \Gamma$ is the first projection of $(\Gamma. 0 S)_\sigma = \{ (\gamma, s) : \gamma \in \Gamma_\sigma. s \in S(\gamma)\}$, ($\sigma \in \{\O, \R \}$) and is realized by $\lambda^* t. (t.K)$.\\
+  The equality $U(p_{\Gamma.S}) = p_{U\Gamma.S}$ holds trivially due to the identical structure of context extension in the underlying $CwF$ and $\cL$.
+  
+  \item define $v_{\Gamma.S} \in RTm(0\Gamma.1S, S\{p_{U\Gamma.S}\})$ as the second projection. $v_{\Gamma.S}$ is realized by $\lambda^* t. B.t.K.D$.
+  
+  \item Let $a^\sigma_f$ realizes $f_\sigma$, then $wk(f, \rho S') \define \lambda (\gamma, s). (f (\gamma), s)$ is realized by $\lambda^* q. \textit{let }[x, y] = q \textit{ in } [a^\sigma_f . x , y]$
+  
+  \item given a $M_\sigma \in RTm(\Gamma, S) = M_\sigma : \forall \gamma \in U\Gamma_\sigma. S_\sigma(\gamma)$ with realizers $a^\sigma_m$, let $\overline{\rho M}_\sigma \define \lambda \gamma. (\gamma, M_\sigma(\gamma))$ realized by $\lambda^* q. \textit{let }[x, y] = q \textit{ in } [x, F_\rho.(!_\rho a^\sigma_m).y]$   
+  
+  \item given a $M_\sigma \in Tm(U\Gamma, S) = M_\sigma : \forall \gamma \in U\Gamma_\sigma. S_\sigma(\gamma)$, let $\overline{M}_\sigma \define \lambda \gamma. (\gamma, M_\sigma(\check\gamma))$ realized by the $K$ combinator.
+\end{itemize}
 
 %\begin{enumerate}[noitemsep]
 %  \item A CwF $(\cC, 1, Ty, Tm, -.-, \langle-.-\rangle)$.\\
