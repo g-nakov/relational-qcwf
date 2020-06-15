@@ -150,45 +150,71 @@ Let $\Gamma, \Delta \in \ob\cRGph$, define:
 
 \subsection*{Upgrading to a QCwF}
 Recall the definition of a QCwF from \cite{fill}.
-Given a usage semiring $R$, a $R$-QCwF consists of
+Given a usage semiring $R$, a $R$-QCwF consists of:
 \begin{enumerate}[noitemsep]
-  \item A CwF $()$
-  \item 
+  \item A CwF $(\cC, 1, Ty, Tm, -.-, \langle-.-\rangle)$
+  
+  \item A category $\cL$ with a faithful functor $U : \cL \to \cC$
+  
+  \item A functor $(+) : \cL \times_\cC \cL \to \cL$, s.t $U(\Gamma_1 + \Gamma_2) = U(\Gamma_1) = U(\Gamma_2)$\footnote{the second equality being trivially satisfied}. $\cL \times_\cC \cL$ denotes the pullback $\cL \xrightarrow{U} \cC \xleftarrow{U} \cL$.\\
+  Additionally, there exists an object $\lozenge \in \cL$, s.t. $U\lozenge = 1$.
+  
+  \item A functor $\rho(-): \cL \to \cL$ for each $\rho \in R$, s.t $U(\rho(-)) = U(-)$.
+  
+  \item A collection $RTm(\Gamma, S)$ for each $\Gamma \in \cL$ and $S \in Ty(U\Gamma)$, equipped with an injective function $U_{\Gamma.S} : RTm(\Gamma, S) \to Tm(U\Gamma, S)$.\\
+  For $\cL$ morphisms $f: \Gamma \to \Delta$ and types $S \in Ty(U\Gamma)$, a function $-\{f\} : RTm(\Delta, S) \to RTm(\Gamma, S\{f\})$, s. t. $U(-\{f\}) = (U(-))\{Uf\}$.
+         
+  \item Given $\Gamma \in \cL$, $\rho \in R$ and $S \in Ty(U\Gamma)$, an object $\Gamma. \rho S$, s.t $U(\Gamma. \rho S) = U\Gamma.S$.\\
+  Additionally, there exist the following natural transformations:
+  \subitem $emp_\pi : \lozenge \to \pi\lozenge$, s.t. $U(emp_\pi)=id_1$
+  \subitem $emp_+ : \lozenge \to \lozenge + \lozenge$, s.t. $U(emp_+)=id_1$
+  \subitem $ext_\pi : \pi\Gamma. (\pi\rho S) \to \pi(\Gamma. \rho S)$, s.t. $U(ext_\pi) = id$ 
+  \subitem $ext_+ : (\Gamma_1 + \Gamma_2).(\rho_1 + \rho_2)S \to \Gamma_1.\rho_1 S + \Gamma_2 . \rho_2 S$, s.t.  $U(ext_+) = id$ 
+  
+  \item Given $\Gamma \in \cL$, $S \in Ty(U\Gamma)$, there exists:
+  \subitem a morphism $p_{\Gamma.S} : \Gamma. 0S \to \Gamma$, s.t. $U(p_{\Gamma.S})=p_{U\Gamma.S}$
+  \subitem an element $v_{\Gamma.S} \in RTm(0\Gamma.1S, S\{p_{U\Gamma.S}\})$, s.t. $U(v_{\Gamma.S})=v_{U\Gamma.S}$
+  \subitem a morphism $wk(f, \rho S) : \Gamma.\rho S\{Uf\} \to \Delta.\rho S$ for each $f : \Gamma \to \Delta$, s.t. $U(wk(f, \rho S))=wk(Uf, S)$
+  \subitem let $\Gamma_1, \Gamma_2 \in \cL$, s.t $U\Gamma_1 = U\Gamma_2$ and $M \in RTm(\Gamma_2, S)$. There is a morphism $\overline{\rho M} : \Gamma_1 + \rho \Gamma_2 \to \Gamma_1 . \rho S$, s.t $U(\overline{\rho M})= \overline{UM}$
+  \subitem a morphism $\overline{M} : \Gamma \to \Gamma.0S$ for $M \in Tm(U\Gamma, S)$, s.t. $U(\overline{M})=\overline{M}$.
 \end{enumerate}
 
+Now to construct the concrete QCwF, consider the CwF from previous section as the underlying category.\\
+Take $\cL := \cRGph(\algA)$ and let $U$ be the functor $\cRGph(\algA) \to \cRGph$, sending an assembly to its underlying set, forgetting the realizability function.
 
-\begin{enumerate}[noitemsep]
-  \item A CwF $(\cC, 1, Ty, Tm, -.-, \langle-.-\rangle)$.\\
-  Consider the CwF built in the previous section
-  
-  \item Category $\cL$ for context with resource annotation, equipped with a faithful functor $U: \cL \to \cC$.\\
-  Take $cL := \cRGph(\algA)$ and let $U$ be the functor $\cRGph(\algA) \to \cRGph$, sending an assembly to its underlying set, forgetting the realizability function.
-  
-  \item Addition structure - let $\cL \times_\cC \cL$ denote the pullback $\cL \xrightarrow{U} \cC \xleftarrow{U} \cL$, we stipulate the existence of a functor $(+): \cL \times_\cC \cL \to \cL$, s.t $U(\Gamma' + \Gamma'')=U(\Gamma')=U(\Gamma'')$. Moreover, there is a distinguished object $\lozenge \in \cL$, s.t $U(\lozenge) = 1$.\\
-  Suppose $\Gamma', \Gamma''$ are r.g. of assemblies, such that $\carr{\Gamma'\O}=\carr{\Gamma''\O}$ and $\carr{\Gamma'\R}=\carr{\Gamma''\R}$. Construct the internal r.g. $\Gamma \define \Gamma' + \Gamma''$, where:
-  \begin{itemize}[noitemsep]
-    \item $\Gamma\O \define (\carr{\Gamma'\O}, \vDash_\Gamma)$ with $ a \vDash_\Gamma \gamma$ iff there exist $x,y \in \algA$, s.t. $a = [x,y]$ and $x \vDash_{\Gamma'} \gamma$ and $ y \vDash_{\Gamma''} \gamma$.
-    \item define $\Gamma\R$ similarly as $\Gamma\O$.
-    \item $\Gamma\rfl$, $\Gamma\src$, $\Gamma\tgt$ are all inherited from $\Gamma'$ (or $\Gamma''$). \textit{(should check this is indeed well-defined)}\\
-    
-    %\textit{To wit that addition preserves realizability of functions, wlog take some $\gamma \in \Gamma\R$, s.t $ a \vDash_{\Gamma\R} \gamma$. Then by definition there exists $x, y\in \algA$, s.t $ x \vDash_{{\Gamma'}\R} \gamma$ and $y \vDash_{{\Gamma''}\R} \gamma$. Moreover, there exist
-    %$b, c \in \algA$, s.t $b. x  \vDash_{{\Gamma'}\O} \Gamma'\src(\gamma)$ and $c. y \vDash_{{\Gamma''}\O} \Gamma''\src(\gamma)$. Let $a^* = \lambda x \lambda y. [b.x, c.y]$, then $a^*$ tracks $\Gamma\src$.}
-    
-    Pick a terminal internal r.g. as an interpretation for $\lozenge$.
-  \end{itemize}  
-  \item Scaling with $\rho \in R$ - there is a functor $\rho(-) : \cL \to \cL$, s.t. $U(\rho(-)) = U(-)$.\\
-  Again we define a internal r.g. $\Gamma \define \rho(\Gamma')$ as :
-  \begin{itemize}
-    \item $\Gamma_\sigma = (\carr{\Gamma'_\sigma}, \vDash_{\Gamma_\sigma})$ with $a \vDash_{\Gamma_\sigma} \gamma$ iff there is $x \in \algA$, s.t $a = !_\rho x$ and $x \vDash_{\Gamma'_\sigma} \gamma$ for $\sigma \in \{O, R\}$
-    
-    \item $\Gamma_\sigma$ is just $\Gamma'_\sigma$ for $\sigma\in\{src,tgt,rfl\}$ \\
-    %To see that, for instance, $\Gamma\rfl$ retain realizability, let $a \vDash_{\Gamma\O} \gamma$. Therefore, there is some $x, b \in \algA$, s.t $ x \vDash_{\Gamma\O'} \gamma$ and $b. x \vDash_{\Gamma\R'} \Gamma'\rfl(\gamma)$. Now consider $a^* \define F_\rho. (!_\rho b)$, we have $a^* . x \vDash_{\Gamma\R} \Gamma\rfl(\gamma)$.
-    
-    As the functor $\rho$ modifies only realizability information, it is clear that $U(\rho(-)) = U(-)$ holds.
-    
-  \end{itemize}
-  
-\end{enumerate}
+
+%
+%\begin{enumerate}[noitemsep]
+%  \item A CwF $(\cC, 1, Ty, Tm, -.-, \langle-.-\rangle)$.\\
+%  Consider the CwF built in the previous section
+%  
+%  \item Category $\cL$ for context with resource annotation, equipped with a faithful functor $U: \cL \to \cC$.\\
+%  
+%  \item Addition structure - let $\cL \times_\cC \cL$ denote the pullback $\cL \xrightarrow{U} \cC \xleftarrow{U} \cL$, we stipulate the existence of a functor $(+): \cL \times_\cC \cL \to \cL$, s.t $U(\Gamma' + \Gamma'')=U(\Gamma')=U(\Gamma'')$. Moreover, there is a distinguished object $\lozenge \in \cL$, s.t $U(\lozenge) = 1$.\\
+%  Suppose $\Gamma', \Gamma''$ are r.g. of assemblies, such that $\carr{\Gamma'\O}=\carr{\Gamma''\O}$ and $\carr{\Gamma'\R}=\carr{\Gamma''\R}$. Construct the internal r.g. $\Gamma \define \Gamma' + \Gamma''$, where:
+%  \begin{itemize}[noitemsep]
+%    \item $\Gamma\O \define (\carr{\Gamma'\O}, \vDash_\Gamma)$ with $ a \vDash_\Gamma \gamma$ iff there exist $x,y \in \algA$, s.t. $a = [x,y]$ and $x \vDash_{\Gamma'} \gamma$ and $ y \vDash_{\Gamma''} \gamma$.
+%    \item define $\Gamma\R$ similarly as $\Gamma\O$.
+%    \item $\Gamma\rfl$, $\Gamma\src$, $\Gamma\tgt$ are all inherited from $\Gamma'$ (or $\Gamma''$). \textit{(should check this is indeed well-defined)}\\
+%    
+%    %\textit{To wit that addition preserves realizability of functions, wlog take some $\gamma \in \Gamma\R$, s.t $ a \vDash_{\Gamma\R} \gamma$. Then by definition there exists $x, y\in \algA$, s.t $ x \vDash_{{\Gamma'}\R} \gamma$ and $y \vDash_{{\Gamma''}\R} \gamma$. Moreover, there exist
+%    %$b, c \in \algA$, s.t $b. x  \vDash_{{\Gamma'}\O} \Gamma'\src(\gamma)$ and $c. y \vDash_{{\Gamma''}\O} \Gamma''\src(\gamma)$. Let $a^* = \lambda x \lambda y. [b.x, c.y]$, then $a^*$ tracks $\Gamma\src$.}
+%    
+%    Pick a terminal internal r.g. as an interpretation for $\lozenge$.
+%  \end{itemize}  
+%  \item Scaling with $\rho \in R$ - there is a functor $\rho(-) : \cL \to \cL$, s.t. $U(\rho(-)) = U(-)$.\\
+%  Again we define a internal r.g. $\Gamma \define \rho(\Gamma')$ as :
+%  \begin{itemize}
+%    \item $\Gamma_\sigma = (\carr{\Gamma'_\sigma}, \vDash_{\Gamma_\sigma})$ with $a \vDash_{\Gamma_\sigma} \gamma$ iff there is $x \in \algA$, s.t $a = !_\rho x$ and $x \vDash_{\Gamma'_\sigma} \gamma$ for $\sigma \in \{O, R\}$
+%    
+%    \item $\Gamma_\sigma$ is just $\Gamma'_\sigma$ for $\sigma\in\{src,tgt,rfl\}$ \\
+%    %To see that, for instance, $\Gamma\rfl$ retain realizability, let $a \vDash_{\Gamma\O} \gamma$. Therefore, there is some $x, b \in \algA$, s.t $ x \vDash_{\Gamma\O'} \gamma$ and $b. x \vDash_{\Gamma\R'} \Gamma'\rfl(\gamma)$. Now consider $a^* \define F_\rho. (!_\rho b)$, we have $a^* . x \vDash_{\Gamma\R} \Gamma\rfl(\gamma)$.
+%    
+%    As the functor $\rho$ modifies only realizability information, it is clear that $U(\rho(-)) = U(-)$ holds.
+%    
+%  \end{itemize}
+%  
+%\end{enumerate}
 
 \subsection*{Type formers}
 
