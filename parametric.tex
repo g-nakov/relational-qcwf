@@ -162,7 +162,7 @@ Given a usage semiring $R$, a $R$-QCwF consists of:
   \item A functor $\rho(-): \cL \to \cL$ for each $\rho \in R$, s.t $U(\rho(-)) = U(-)$.
   
   \item A collection $RTm(\Gamma, S)$ for each $\Gamma \in \cL$ and $S \in Ty(U\Gamma)$, equipped with an injective function $U_{\Gamma.S} : RTm(\Gamma, S) \to Tm(U\Gamma, S)$.\\
-  For $\cL$ morphisms $f: \Gamma \to \Delta$ and types $S \in Ty(U\Gamma)$, a function $-\{f\} : RTm(\Delta, S) \to RTm(\Gamma, S\{f\})$, s. t. $U(-\{f\}) = (U(-))\{Uf\}$.
+  For an $\cL$ morphisms $f: \Gamma \to \Delta$ and types $S \in Ty(U\Gamma)$, a function $-\{f\} : RTm(\Delta, S) \to RTm(\Gamma, S\{f\})$, s. t. $U(-\{f\}) = (U(-))\{Uf\}$.
          
   \item Given $\Gamma \in \cL$, $\rho \in R$ and $S \in Ty(U\Gamma)$, an object $\Gamma. \rho S$, s.t $U(\Gamma. \rho S) = U\Gamma.S$.\\
   Additionally, there exist the following natural transformations:
@@ -180,10 +180,50 @@ Given a usage semiring $R$, a $R$-QCwF consists of:
 \end{enumerate}
 
 Now to construct the concrete QCwF, consider the CwF from previous section as the underlying category.\\
-Take $\cL := \cRGph(\algA)$ and let $U$ be the functor $\cRGph(\algA) \to \cRGph$, sending an assembly to its underlying set, forgetting the realizability function.
+Take $\cL := \cRGph(\algA)$ and let $U$ be the functor $\cRGph(\algA) \to \cRGph$, sending an assembly to its underlying set, forgetting the realizability function.\\
+For the addition structure, let $\Gamma', \Gamma''$ be r.g. of assemblies, s.t  $\carr{\Gamma'\O}=\carr{\Gamma''\O}$ and $\carr{\Gamma'\R}=\carr{\Gamma''\R}$. Construct the r.g. of assemblies $\Gamma \define \Gamma' + \Gamma''$, where:
+\begin{itemize}[noitemsep]
+    \item $\Gamma\O \define (\carr{\Gamma'\O}, \vDash_\Gamma)$ with $ a \vDash_\Gamma \gamma$ iff there exist $x,y \in \algA$, s.t. $a = [x,y]$ and $x \vDash_{\Gamma'} \gamma$ and $ y \vDash_{\Gamma''} \gamma$.
 
+    \item define $\Gamma\R$ similarly as $\Gamma\O$.
 
+    \item $\Gamma\rfl$, $\Gamma\src$, $\Gamma\tgt$ are the same as their $\Gamma'$ counterparts (or $\Gamma''$).\\
+\end{itemize}
+Let $\lozenge$ be the terminal object in $\cRGph(\algA)$\\
+Consider the scaling structure and let $\Gamma \define \rho(\Gamma')$ :
+  \begin{itemize}
+    \item $\Gamma_\sigma = (\carr{\Gamma'_\sigma}, \vDash_{\Gamma_\sigma})$ with $a \vDash_{\Gamma_\sigma} \gamma$ iff there is $x \in \algA$, s.t $a = !_\rho x$ and $x \vDash_{\Gamma'_\sigma} \gamma$ for $\sigma \in \{O, R\}$
+    
+    \item again, scaling leaves unmodified $\Gamma_\sigma$ for $\sigma\in\{src,tgt,rfl\}$.
+\end{itemize}
+Let $RTm(\Gamma, S)$ be the collection of assembly morphisms from the terminal object to $S$ (note any set-theoretic function from the terminal object is realizable). Spelling this out, $RTm(\Gamma, S)$ consists of tuples $(M\O, M\R)$, s.t. the conditions from $\cref{def:fam-refl-graphs}$ are satisfied. $U_{\Gamma.S}$ just forgets the realizability information and is trivially injective. Substitution in terms is given by precomposition with $f : \Gamma \to \Delta$ - $-\{f\O\} \define \lambda M\O. \forall \gamma \in \Gamma . M\O(f(\gamma))$ and similarly, $-\{f\R\} \define \lambda M\R . \forall \gamma \in \Gamma . M\R(f(\gamma))$. The functor $U$ interacts nicely with the so-defined $-\{f\}$ as essentially the substitution in terms in the underlying CwF is defined in the same way.\\
+
+Let $\Gamma . \rho S \define (\Gamma'\O, \Gamma'\R, \Gamma'_\sigma)$, where
+\begin{itemize}
+  \item $\carr{\Gamma'\O} \define \{(\gamma, x) : \gamma \in \Gamma\O, x \in S\O(\gamma) \}$ and $ a \vDash_{\Gamma. \rho S} (\gamma, x)$ iff there exists $b, c \in \algA$, s.t $a = [b, !_\rho c]$, $b \vDash_{\Gamma} \gamma$ and $c \vDash_{S(\gamma)} \pi_1(\check{(\gamma, x)}) $, where $\check{(-)} : \Gamma . S \to U(\Gamma . S)$, $\check{(-)} \define id$ as the set-theoretic part of the extensions in the CwF and $\cL$ is the same by definition.
+  
+  \item $\carr{\Gamma'\R}$ is defined analogously. 
+  
+  \item $\Gamma'_\sigma$ is defined pointwise.
+\end{itemize}
+            
+$emp_\pi : \lozenge \to \pi \lozenge$ is given by identity function on both the object and relational part. It is realized by $K. !_\rho I$. Similarly, $emp_+$ is realized by $K . [I, I]$,\\
+$ext_\pi$ - by $\lambda^* q. \textit{let }[x, y] = q\textit{ in } F_\pi . (F_\pi (!_\pi \lambda^* s t u. u s t) . x) . \delta_{\pi \rho} y$ and \\
+$ext_+$ - by $\lambda^* q. \textit{let } [[x , y], z] = q \textit{ in } W_{\pi\rho}.(\lambda^* a b. [[x, a],  [y, b]]).z$\\
+
+The underlying function part of the above-defined natural transformations is given by identity, hence naturality follows trivially.
+
+%$\lambda^* q. \textit{let }[x, y] = q\textit{ in } F_\pi . (F_\pi (!_\pi \lambda^* s t u. u s t) . x) . \delta_{\pi \rho} y$\\
 %
+%Substituting $!_\pi a$ for $x$, and $!_{\pi\rho} s$ for $y$, we get $F_\pi (!_\pi (\lambda^* t u. u\, a\, t)). (!_\pi !_\rho s) \rightsquigarrow !_\pi (\lambda^* u. u a (!_\rho s))$\\
+%
+%$!_\pi (a . !_\rho s)$
+%
+%$[ !_\pi a, !_{\pi \rho} s] \mapsto !_\pi [a , !_\rho s]$
+%$ext_+$ - $[[a, b], !_{\rho_1 + \rho_2} c] \mapsto [[a, !\rho_1 c], [b, !\rho_2 c]]$
+
+Finally, we construct the morphisms, listed in 7).
+
 %\begin{enumerate}[noitemsep]
 %  \item A CwF $(\cC, 1, Ty, Tm, -.-, \langle-.-\rangle)$.\\
 %  Consider the CwF built in the previous section
