@@ -7,9 +7,7 @@
 \foreachLetter{1}{27}{\definealg}
 
 \autodefs{\cAsm\cCat\cSet\cRGph}
-\autodefs{\cC}
 
-  
 \def\src{_{src}}\alwaysmath{src}
 \def\rfl{_{refl}}\alwaysmath{rfl}
 \def\tgt{_{tgt}}\alwaysmath{tgt}
@@ -17,6 +15,7 @@
 \renewcommand{\O}{_{O}}\alwaysmath{O}
 \def\R{_{R}}\alwaysmath{R}
   
+\setlist[itemize]{noitemsep}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -68,7 +67,7 @@ We use reflexive graphs to give a dyadic interpretation of types in the spirit o
 
 One could easily generalize reflexive graphs by considering object and relation components from an arbitrary category $\cC$ instead of $\cSet$. As our purpose is to build a realizability model, we pick $\cAsm(\algA)$ as the category of interest and identify two appropriate notions of reflexive graph of assemblies and a family of reflexive graphs of assemblies.
 
-\begin{definition}[Reflixive graph of assemblies]
+\begin{definition}[Reflexive graph of assemblies]
   A reflexive graph of assemblies $G$ is a pair of assemblies $(G\O, G\R)$ and a triple of set-theoretic $(G\rfl : \carr{G\O} \to \carr{G\R}, \; G\src : \carr{G\R} \to \carr{G\O}, \; G\tgt : \carr{G\R} \to \carr{G\O})$, such that the identities in \cref{def:refl-graph} are satisfied.
 \end{definition}
 
@@ -208,7 +207,7 @@ Let $\Gamma . \rho S \define (\Gamma'\O, \Gamma'\R, \Gamma'_\sigma)$, where
 \end{itemize}
             
 $emp_\pi : \lozenge \to \pi \lozenge$ is given by identity function on both the object and relational part. It is realized by $K. !_\rho I$. Similarly, $emp_+$ is realized by $K . [I, I]$,\\
-$ext_\pi$ - by $\lambda^* q. \textit{let }[x, y] = q\textit{ in } F_\pi . (F_\pi (!_\pi \lambda^* s t u. u s t) . x) . \delta_{\pi \rho} y$ and \\
+$ext_\pi$ - by $\lambda^* q. \textit{let }[x, y] = q\textit{ in } F_\pi . (F_\pi. (!_\pi \lambda^* s t u. u s t) . x) . \delta_{\pi \rho} y$ and \\
 $ext_+$ - by $\lambda^* q. \textit{let } [[x , y], z] = q \textit{ in } W_{\pi\rho}.(\lambda^* a b. [[x, a],  [y, b]]).z$\\
 
 The underlying function part of the above-defined natural transformations is given by identity, hence naturality follows trivially.
@@ -272,99 +271,85 @@ Finally, we construct the morphisms, listed in 7:
 
 % \paragraph{Universe of small types}
 
-\paragraph{Dependent function types in 1-fragment}
-Given an internal reflexive graph $\Gamma$, $S \in Ty(\Gamma)$, $T \in Ty(\Gamma.S)$, $\rho \in R$, define $\Pi\rho S T \in Ty(\Gamma)$ as the tuple of:
-\begin{itemize}[noitemsep]
-  \item Object assembly. Let $\gamma \in \carr{\Gamma\O}$
-    \begin{align*}
-      |(\Pi \rho S T)\O|(\gamma) \define \{ (f\O,& f\R) | \\
-      & f\O : \forall s \in S\O(\gamma).T\O(\gamma, s),\\
-      & \exists a \in \algA\, \forall s \in \carr{S\O(\gamma)}, b \in \algA.\\
-      & \hspace{3em} b \vDash_{S\O(\gamma)} s \implies a . !_\rho b \vDash_{T\O(\gamma,s)} f\O(s) \\
-      & f\R : \forall r \in S\R(\Gamma\rfl(\gamma)). T\R(\Gamma\rfl(\gamma), r),\\
-      & \exists a \in \algA\, \forall r \in \carr{S\R(\Gamma\rfl(\gamma))}, b \in \algA.\\ 
-      & \hspace{3em} b \vDash_{S\R(\Gamma\rfl(\gamma))} r \implies a . !_\rho b \vDash_{T\R(\Gamma\rfl(\gamma),r)} f\R(r),\\
-      & \forall s \in S\O(\gamma). T\rfl(\gamma, s)(f\O (s)) = f\R(S\rfl(\gamma)(s)),\\
-      & \forall r \in S\R(\Gamma\rfl(\gamma)). T\src(\Gamma\rfl(\gamma),r)(f\R (r)) = f\O(S\src(\Gamma\rfl(\gamma))(r)),\\
-      & \forall r \in S\R(\Gamma\rfl(\gamma)). T\tgt(\Gamma\rfl(\gamma),r)(f\R (r)) = f\O(S\tgt(\Gamma\rfl(\gamma))(r))  \}
-    \end{align*}
-    
-    $ a \vDash_{(\Pi \rho S T)\O(\gamma)} (f\O, f\R)$ iff $a = [a_o, a_r]$ where the realizers $a_o, a_r$ are given by the existential statements above.
-    
-   \item Relation assembly. Let $\gamma \in \carr{\Gamma\R}$
-     \begin{align*}
-       |(\Pi \rho S T)\R|(\gamma) \define \{( (f\O^{src},& \, f\R^{src}), (f\O^{tgt}, f\O^{tgt}), r)  | \\
-       & (f\O^{src},f\R^{src}) \in (\Pi\rho S T)\O(\Gamma\src(\gamma)),\\
-       & (f\O^{tgt},f\R^{tgt}) \in (\Pi\rho S T)\O(\Gamma\tgt(\gamma)),\\
-       & r : \forall s \in S\R(\gamma). T\R(\gamma, s),\\
-       & \exists a \in \algA\, \forall s \in \carr{S\R(\gamma)}, b \in \algA. b \vDash_{S\R(\gamma)} s \implies a . !_\rho b \vDash_{T\R(\gamma,s)} r(s),\\       
-       & \forall s \in S\R(\gamma). T\src(\gamma, s)( r (s)) = f\O^{src}(S\src(\gamma)(s)),\\
-       & \forall s \in S\R(\gamma). T\tgt(\gamma, s)( r (s)) = f\O^{tgt}(S\tgt(\gamma)(s)) \}
-     \end{align*}
-   \item collections of morphisms:\\
-   $(\Pi \rho S T)\rfl(\gamma)(f\O, f\R) \define ((f\O, f\R), (f\O, f\R), f\R)$ for $\gamma \in \Gamma\O$\\
-   $(\Pi \rho S T)\src(\gamma)(f^{src}, f^{tgt}, r) \define f^{src}$ for $\gamma \in \Gamma\R$ \\
-   $(\Pi \rho S T)\src(\gamma)(f^{src}, f^{tgt}, r) \define f^{tgt}$ for $\gamma \in \Gamma\R$ \\
-   These collections satisfy the identity conditions in \cref{def:fam-refl-graphs}.
+\paragraph{Dependent function types}
+A QCwF supports dependent function types with usage information, if
+
+\begin{itemize}
+ \item the underlying CwF \cC supports them, namely, if for all $\Gamma \in \ob\cC, S \in Ty(\Gamma), T \in Ty(\Gamma . S)$, $\pi \in R$, there exist type $\Pi\pi S T \in Ty(\Gamma)$ and a bijection $$\Lambda : Tm(\Gamma.S, T) \cong Tm(\Gamma, \Pi\pi S T) \label{eq:dep-prod-cwf}$$, natural in $\Gamma$.
+
+  \item for $\Gamma \in \ob\cL, S \in Ty(U\Gamma), T \in Ty(U\Gamma . S), \pi \in R$, there exists a bijection $\Lambda_\cL : RTm(\Gamma.\pi S, T) \cong RTm(\Gamma, \Pi\pi S T) \label{eq:dep-prod-qcwf}$, natural in $\Gamma$ such that $U \comp \Lambda_\cL = \Lambda \comp U$ and $U \comp \Lambda^{-1}_\cL = \Lambda^{-1}\comp U$.
+ 
 \end{itemize}
+
+We present the explicit construction in our model. Fix some $\pi \in R$, let $\Gamma$ be a r.g in $\ob\cC$, $S \in Ty(\Gamma)$, $T \in Ty(\Gamma . S)$. 
+Define the semantic type $\Pi \pi S T$ as the family of assemblies over $\Gamma$, consisting of:
+\begin{itemize}
+    \item $(\Pi \pi S T)\O(\gamma) \define (X, \vDash_X)$ for $\gamma \in \Gamma\O$.
+    
+ 
+    
+    
+    \item $(\Pi \pi S T)\R(\gamma) \define (Y, \vDash_Y)$ for $\gamma \in \Gamma\R$, where
+    \subitem
+     $\begin{aligned}
+           Y \define \{( (f\O^{src}, \, f\R^{src}), (f\O^{tgt}, f\O^{tgt}), r)  \quad|\quad
+            & (f\O^{src},f\R^{src}) \in (\Pi\rho S T)\O(\Gamma\src(\gamma)),\\
+            & (f\O^{tgt},f\R^{tgt}) \in (\Pi\rho S T)\O(\Gamma\tgt(\gamma)),\\
+            & r : \forall s \in S\R(\gamma). T\R(\gamma, s),\\
+            & \exists a \in \algA\, \forall s \in \carr{S\R(\gamma)}, b \in \algA. b \vDash_{S\R(\gamma)} s \implies a . !_\rho b \vDash_{T\R(\gamma,s)} r(s),\\       
+            & \forall s \in S\R(\gamma). T\src(\gamma, s)( r (s)) = f\O^{src}(S\src(\gamma)(s)),\\
+            & \forall s \in S\R(\gamma). T\tgt(\gamma, s)( r (s)) = f\O^{tgt}(S\tgt(\gamma)(s)) \}
+      \end{aligned}$
+    \subitem $a \vDash_Y ()$ iff 
+
+    \item $(\Pi \pi S T)\rfl(\gamma) \define \lambda (f\O, f\R). ((f\O, f\R), (f\O, f\R), f\R) $ for $\gamma \in \Gamma\O$.
+    
+    \item $(\Pi \pi S T)\src(r) \define \lambda (f^{src}, f^{tgt}, r). f^{src}$ for $r \in \Gamma\R$.
+    
+    \item $(\Pi \pi S T)\tgt(r) \define \lambda (f^{src}, f^{tgt}, r), f^{tgt}$ for $r \in \Gamma\R$.
+\end{itemize}
+
+Given a reflexive graph $\Gamma$, $S \in Ty(\Gamma)$, $T \in Ty(\Gamma.S)$, $\rho \in R$, define $\Pi\rho S T \in Ty(\Gamma)$ as the tuple of:
+%
+%\begin{itemize}[noitemsep]
+%  \item Object assembly. Let $\gamma \in \carr{\Gamma\O}$
+%    \begin{align*}
+%      |(\Pi \rho S T)\O|(\gamma) \define \{ (f\O,& f\R) | \\
+%      & f\O : \forall s \in S\O(\gamma).T\O(\gamma, s),\\
+%      & \exists a \in \algA\, \forall s \in \carr{S\O(\gamma)}, b \in \algA.\\
+%      & \hspace{3em} b \vDash_{S\O(\gamma)} s \implies a . !_\rho b \vDash_{T\O(\gamma,s)} f\O(s) \\
+%      & f\R : \forall r \in S\R(\Gamma\rfl(\gamma)). T\R(\Gamma\rfl(\gamma), r),\\
+%      & \exists a \in \algA\, \forall r \in \carr{S\R(\Gamma\rfl(\gamma))}, b \in \algA.\\ 
+%      & \hspace{3em} b \vDash_{S\R(\Gamma\rfl(\gamma))} r \implies a . !_\rho b \vDash_{T\R(\Gamma\rfl(\gamma),r)} f\R(r),\\
+%      & \forall s \in S\O(\gamma). T\rfl(\gamma, s)(f\O (s)) = f\R(S\rfl(\gamma)(s)),\\
+%      & \forall r \in S\R(\Gamma\rfl(\gamma)). T\src(\Gamma\rfl(\gamma),r)(f\R (r)) = f\O(S\src(\Gamma\rfl(\gamma))(r)),\\
+%      & \forall r \in S\R(\Gamma\rfl(\gamma)). T\tgt(\Gamma\rfl(\gamma),r)(f\R (r)) = f\O(S\tgt(\Gamma\rfl(\gamma))(r))  \}
+%    \end{align*}
+%    
+%    $ a \vDash_{(\Pi \rho S T)\O(\gamma)} (f\O, f\R)$ iff $a = [a_o, a_r]$ where the realizers $a_o, a_r$ are given by the existential statements above.
+%    
+%   \item Relation assembly. Let $\gamma \in \carr{\Gamma\R}$
+%     \begin{align*}
+%       |(\Pi \rho S T)\R|(\gamma) \define \{( (f\O^{src},& \, f\R^{src}), (f\O^{tgt}, f\O^{tgt}), r)  | \\
+%       & (f\O^{src},f\R^{src}) \in (\Pi\rho S T)\O(\Gamma\src(\gamma)),\\
+%       & (f\O^{tgt},f\R^{tgt}) \in (\Pi\rho S T)\O(\Gamma\tgt(\gamma)),\\
+%       & r : \forall s \in S\R(\gamma). T\R(\gamma, s),\\
+%       & \exists a \in \algA\, \forall s \in \carr{S\R(\gamma)}, b \in \algA. b \vDash_{S\R(\gamma)} s \implies a . !_\rho b \vDash_{T\R(\gamma,s)} r(s),\\       
+%       & \forall s \in S\R(\gamma). T\src(\gamma, s)( r (s)) = f\O^{src}(S\src(\gamma)(s)),\\
+%       & \forall s \in S\R(\gamma). T\tgt(\gamma, s)( r (s)) = f\O^{tgt}(S\tgt(\gamma)(s)) \}
+%     \end{align*}
+%   \item collections of morphisms:\\
+%   $(\Pi \rho S T)\rfl(\gamma)(f\O, f\R) \define ((f\O, f\R), (f\O, f\R), f\R)$ for $\gamma \in \Gamma\O$\\
+%   $(\Pi \rho S T)\src(\gamma)(f^{src}, f^{tgt}, r) \define f^{src}$ for $\gamma \in \Gamma\R$ \\
+%   $(\Pi \rho S T)\src(\gamma)(f^{src}, f^{tgt}, r) \define f^{tgt}$ for $\gamma \in \Gamma\R$ \\
+%   These collections satisfy the identity conditions in \cref{def:fam-refl-graphs}.
+%\end{itemize}
 
 % \paragraph{Dependent pairs}
 
 
 
 
-
-%\textbf{Scaffold for a "relational" QCwF\footnote{if such construction exists at all}}
-%\begin{enumerate}[leftmargin=*]
-%  
-%  \item category of contexts\\
-%  Consider the category of reflexive graphs.
-%  
-%  \item semantic types\\
-%  For a r.g. $\Gamma$, let $Ty(\Gamma)$  be the collection of families of r.g.a over $\Gamma$ as defined above.
-%  
-%  \item (unresourced) semantic terms\\
-%  For a r.g. $\Gamma$ and $S \in Ty(\Gamma)$, a term $M \in Tm(\Gamma, S)$ consist of a pair of functions\\ $(M_O : \Pi( \gamma : \Gamma_O)S_O(\gamma),\, M_R: \Pi(\gamma: \Gamma_R)S_R(\gamma))$, s.t the analogues of equations $(1)$ are satisfied (suppressing $x$).
-%  
-%  \item substitution in types and terms\\
-%  For a r.g. morphism $(f_O, f_R): \Gamma \to \Delta$, define
-%  
-%  \item context extension\\
-%  For a r.g. $\Gamma$ and $S \in Ty(\Gamma)$, define the r.g. $\Gamma.S$:
-%  \begin{itemize}[noitemsep]
-%    \item $(\Gamma.S)_O \define \{(\gamma, s) : \gamma \in \Gamma_O, s \in |S_O(\gamma)| \}$
-%    \item $(\Gamma.S)_R \define \{(\gamma, r) : \gamma \in \Gamma_R, r \in |S_R(\gamma)| \}$
-%    \item $(\Gamma.S)\rfl \define \lambda \gamma : \Gamma_O, x : |S_O(\gamma)|. (\Gamma\rfl(
-%    \gamma),\, S\rfl(\gamma)(x))$
-%    \item $(\Gamma.S)\src \define \lambda \gamma : \Gamma_R, r : |S_R(\gamma)|. (\Gamma\src(
-%    \gamma),\, S\src(\gamma)(x))$
-%    \item $(\Gamma.S)\tgt \define \lambda \gamma : \Gamma_R, r : |S_R(\gamma)|. (\Gamma\tgt(
-%    \gamma),\, S\tgt(\gamma)(x))$
-%  \end{itemize}
-%  \textit{should check there is a natural bijection,, natural in $\Gamma$}
-%  
-%  \item category of resource-annotated contexts\\
-%  Take the category of rga-s. Scaling and addition structure is defined only on the realizability relation. \textit {There might be a problem here - should check the pair of assembly morphism still acts the rga morphism after scaling / addition.}
-%  
-%  \item resourced semantic terms
-%  
-%  \item resourced context extension \\ 
-%  Given a r.g.a $\Gamma$ in $\L$, $S \in Ty(U\Gamma)$ and $\rho \in R$, define a r.g.a :
-%    \begin{itemize}[noitemsep]
-%    
-%    \item $(\Gamma.S)_O \define (\{ (\gamma,s) : \gamma \in |\Gamma_O|, s \in |S_O(\gamma)| \}, \vDash_{\Gamma.S})$, where $a \vDash_{\Gamma.s} (\gamma, s)$ iff there exists $ b, c \in \algA$, s.t $b \vDash_{\Gamma} \gamma$ and $c \vDash_{S_O(\gamma)} s$ and $a = [b, !_{\rho} c]$
-%    
-%    \item $(\Gamma.S)_R \define (\{ (\gamma,s) : \gamma \in |\Gamma_R|, s \in |S_R(\gamma)| \}, \vDash_{\Gamma.S})$, where $a \vDash_{\Gamma.s} (\gamma, s)$ iff there exists $ b, c \in \algA$, s.t $b \vDash_{\Gamma} \gamma$ and $c \vDash_{S_R(\gamma)} s$ and $a = [b, !_{\rho} c]$
-%    \subitem \hspace{-4.2em} the functions are defined pointwise:
-%    \item $ (\Gamma.S)\rfl = \lambda (\gamma, s) : |\Gamma.S|_O. (\Gamma\rfl(\gamma), S\rfl(\gamma)(s))$
-%    
-%    \item $ (\Gamma.S)\src = \lambda (\gamma, s) : |\Gamma.S|_R. (\Gamma\src(\gamma), S\src(\gamma)(s))$
-%    
-%    \item $ (\Gamma.S)\tgt = \lambda (\gamma, s) : |\Gamma.S|_R. (\Gamma\tgt(\gamma), S\tgt(\gamma)(s))$
-%  \end{itemize}
-%  
-%  \item derived "resourced" operations
-%\end{enumerate}
 
 %
 %\footnote{In Tarski's fashion we make distinction between types and terms by introducing a type U for codes of types and explicit decoder T}
