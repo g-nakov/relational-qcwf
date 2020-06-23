@@ -14,8 +14,9 @@
 \def\rfl{_{refl}}\alwaysmath{rfl}
 \def\tgt{_{tgt}}\alwaysmath{tgt}
 
-\renewcommand{\O}{_{O}}\alwaysmath{O}
-\def\R{_{R}}\alwaysmath{R}
+\renewcommand{\O}{_{O}}
+\alwaysmath{O}
+\newcommand{\R}{\ensuremath{_{R}}}
   
 \setlist[itemize]{noitemsep}
 
@@ -284,9 +285,9 @@ Finally, we construct the morphisms, listed in 7:
   A QCwF supports dependent function types with usage information, if
   \begin{itemize}
     
-    \item the underlying CwF \cC supports them, namely, if for all $\Gamma \in \ob\cC, S \in Ty(\Gamma), T \in Ty(\Gamma . S)$, $\pi \in R$, there exist type $\Pi\pi S T \in Ty(\Gamma)$ and a bijection $$\Lambda : Tm(\Gamma.S, T) \cong Tm(\Gamma, \Pi\pi S T) \label{eq:dep-prod-cwf}$$, natural in $\Gamma$.
+    \item the underlying CwF \cC supports them, namely, if for all $\Gamma \in \ob\cC, S \in Ty(\Gamma), T \in Ty(\Gamma . S)$, $\pi \in R$, there exist type $\Pi\pi S T \in Ty(\Gamma)$ and a bijection $$\Lambda : Tm(\Gamma.S, T) \cong Tm(\Gamma, \Pi\pi S T) \label{eq:dep-prod-cwf},$$ natural in $\Gamma$.
     
-    \item for $\Gamma \in \ob\cL, S \in Ty(U\Gamma), T \in Ty(U\Gamma . S), \pi \in R$, there exists a bijection $\Lambda_\cL : RTm(\Gamma.\pi S, T) \cong RTm(\Gamma, \Pi\pi S T) \label{eq:dep-prod-qcwf}$, natural in $\Gamma$ such that $U \comp \Lambda_\cL = \Lambda \comp U$ and $U \comp \Lambda^{-1}_\cL = \Lambda^{-1}\comp U$.    
+    \item for $\Gamma \in \ob\cL, S \in Ty(U\Gamma), T \in Ty(U\Gamma . S), \pi \in R$, there exists a bijection $$\Lambda_\cL : RTm(\Gamma.\pi S, T) \cong RTm(\Gamma, \Pi\pi S T) \label{eq:dep-prod-qcwf},$$ natural in $\Gamma$ such that $U \comp \Lambda_\cL = \Lambda \comp U$ and $U \comp \Lambda^{-1}_\cL = \Lambda^{-1}\comp U$.    
   
   \end{itemize}  
 \end{definition}
@@ -329,8 +330,54 @@ Define the semantic type $\Pi \pi S T$ as the family of assemblies over $\Gamma$
     
     \item $(\Pi \pi S T)\tgt(r) \define \lambda (f^{src}, f^{tgt}, r), f^{tgt}$ for $r \in \Gamma\R$.
 \end{itemize}
+%To ensure $(\Pi \pi S T)$ is a well-defined family of r.g of assemblies w.r.t to \cref{def:fam-refl-graphs}, let $\gamma \in \Gamma\O$
+%%%%%%%%%%%%%%%%%%%%%%
+
+\pagebreak
+
+Unwinding \cref{eq:dep-prod-qcwf}, we get 
+$$\{(M\O,M\R) : (\Gamma. \pi S) \to T \} \cong \{(N\O, N\R) : \Gamma \to (\Pi \pi S T)\}$$
+
+\begin{align*}
+  M\O &: \forall (\gamma, s) \in (\Gamma. \pi S)\O . T\O(\gamma, s) \\
+  M\R &: \forall (\gamma, r) \in (\Gamma. \pi S)\R . T\R(\gamma, s) \\
+  N\O &: \forall \gamma \in \Gamma\O . \{ (f\O , f\R) \quad|\quad f\O : \Pi S(\gamma)\O.T(\gamma)\O\\
+  &  f\R : \Pi S\R (\Gamma\rfl(\gamma).T(\Gamma\rfl(\gamma))) \} \\
+  N\R &: \forall \gamma \in \Gamma\R. \{ (f^{src}, f^{tgt} , r) \quad|\quad  f^{src} \in (\Pi \pi S T)\O(\Gamma\src(\gamma))\\
+  &   f^{tgt} \in (\Pi \pi S T)\O(\Gamma\tgt(\gamma))\\
+  &   r : \Pi S\R (\gamma).T\R(\gamma)\}
+\end{align*}
+
+$$N\O \define \lambda \gamma_o . (\lambda s. M\O(\gamma_o, s), \lambda s_r. M\R(\Gamma\rfl(\gamma_o), s_r))$$
+$$N\R \define \lambda \gamma_r . ( N\O(\Gamma\src(\gamma)), N\O(\Gamma\tgt(\gamma)),  \lambda s_r. M\R(\gamma, s_r)) )$$
 
 
+
+%There exists $b \in \algA$, s.t. for all $s$, $[a_\gamma, !_\pi a_s] \vDash_{\Gamma. S} (\gamma, s) \implies b  . [a_\gamma, !_\pi a_s] \vDash_{T\O(\gamma)} f(\gamma, s)$.
+%
+%want to find realizer:
+%for all $\gamma$, $ a_\gamma \vDash \gamma \implies \mathbf{??} . [a\O, a\R] \vDash_{(\Pi \pi S T)\O(\gamma)}(f\O, f\R)$
+%
+%Given realizers $a,b$ for $x,y$, assume $[a,b] \vDash (x,y)$.\\
+%
+%
+%If $a^O_\gamma \vDash_{\Gamma\O} \gamma_o$
+
+\begin{itemize}[noitemsep]
+  \item $N\O \define \{f : \mathbf{1} \to (\Pi\pi S T)\O(\gamma) \}_{\gamma \in \Gamma\O}$
+  \item $N\R \define \{f : \mathbf{1} \to (\Pi\pi S T)\R(\gamma) \}_{\gamma \in \Gamma\R}$
+\end{itemize}
+We have realizers for the family $M\O \define \{f : \mathbf{1} \to T\O(\gamma) \}_{\gamma \in (\Gamma.\pi S)\O}$\\
+$\exists a_M^{\gamma, s}$, s.t. $a_M^{\gamma, s} \vDash_{T(\gamma,s)} M\O(\gamma,s)$\\
+WTF:\\
+
+$$ a \vDash x \& y$$
+
+for every $\gamma_o \in \Gamma_O$, a realizer $a \vDash_{(\Pi\pi S T)\O} N\O(\gamma_o) \iff$
+
+s.t. there exists $a\O, a\R \in \algA$, s.t $ a = [a\O, a\R]$, s.t.
+$$\forall s \in \carr{S\O(\gamma)}, b \in \algA . b \vDash_{S\O(\gamma)} s \implies a\O . !_\rho b \vDash_{T\O(\gamma,s)} \pi_0(N\O(s))$$ and 
+$$\forall r \in \carr{S\R(\Gamma\rfl(\gamma))}, b \in \algA . b \vDash_{S\R(\Gamma\rfl(\gamma))} r \implies a\R . !_\rho b \vDash_{T\R(\Gamma\rfl(\gamma),r)} \pi_1(N\O(r))$$ 
 
 %
 %\begin{itemize}[noitemsep]
