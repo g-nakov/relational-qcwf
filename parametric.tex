@@ -325,9 +325,9 @@ Define the semantic type $\Pi \pi S T$ as the family of assemblies over $\Gamma$
 
     \item $(\Pi \pi S T)\rfl(\gamma) \define \lambda (f\O, f\R). ((f\O, f\R), (f\O, f\R), f\R) $ for $\gamma \in \Gamma\O$.
     
-    \item $(\Pi \pi S T)\src(r) \define \lambda (f^{src}, f^{tgt}, r). f^{src}$ for $r \in \Gamma\R$.
+    \item $(\Pi \pi S T)\src(\gamma) \define \lambda (f^{src}, f^{tgt}, r). f^{src}$ for $\gamma \in \Gamma\R$.
     
-    \item $(\Pi \pi S T)\tgt(r) \define \lambda (f^{src}, f^{tgt}, r), f^{tgt}$ for $r \in \Gamma\R$.
+    \item $(\Pi \pi S T)\tgt(\gamma) \define \lambda (f^{src}, f^{tgt}, r), f^{tgt}$ for $\gamma \in \Gamma\R$.
 \end{itemize}
 %To ensure $(\Pi \pi S T)$ is a well-defined family of r.g of assemblies w.r.t to \cref{def:fam-refl-graphs}, let $\gamma \in \Gamma\O$
 %%%%%%%%%%%%%%%%%%%%%%
@@ -364,7 +364,7 @@ The conditions $U \comp \Lambda_\cL = \Lambda \comp U$ and $U \comp \Lambda^{-1}
 A plausible candidate for the universe $U$ is the general definition in \cite{fill}:\\
 $\begin{aligned}
   U\O &\define \text{ the set of small r.g. } \\
-  U\R &\define \{(A, B, R, R\src, R\tgt) : R \in \mathcal{U}, R\src: R \to A\O, R\tgt : R \to A\O, A,B \text{ are small r.g.}   \}
+  U\R &\define \{(A, B, R, R\src, R\tgt) : R \in \cU, R\src: R \to A\O, R\tgt : R \to A\O, A,B \text{ are small r.g.}   \}
 \end{aligned}$.\\
 
 However, this universe turns out to be ``too big' - types do not carry enough structure to model parametricity accurately. To remedy the definition, we impose restrictions laid out by the following characterization:\\
@@ -391,7 +391,7 @@ For any reflexive graph $\Gamma$ , define the small, discrete, proof-irrelevant 
    $a \vDash_{U\O(\gamma)} S$ for any $a \in \algA$, $S \in \carr{U\O(\gamma)}$. 
    
   \item $\begin{aligned}
-  U\R(\gamma\O) \define \{(S,T, R, & R\src, R\tgt) \quad|\quad R \in \mathcal{U} \\
+  U\R(\gamma\O) \define \{(S,T, R, & R\src, R\tgt) \quad|\quad R \in \cU \\
   & S,T \text{ are small discrete r.g. of assemblies} \\
   & \langle R\src, R\tgt\rangle : R \to \carr{S\O} \times \carr{T\O} \textit { is injective} \}
   \end{aligned}$
@@ -410,6 +410,20 @@ and $T \in Ty(\Gamma . U)$ as:
   \item $T\src(\gamma\R, (S,T, R, R\src, R\tgt)) \define R\src$
   \item $T\tgt(\gamma\R, (S,T, R, R\src, R\tgt)) \define R\tgt$.
 \end{itemize}
+\begin{claim} $U$ is closed under $\Pi$ types.
+\end{claim}
+Given some r.g $\Gamma$ and $S \in Ty(\Gamma)$, $T \in Ty(\Gamma.S)$, it suffices to show that $\Pi \pi T S \in Ty(\Gamma)$ is a small, discrete and proof-irrelevant family of r.g. of assemblies$^\dagger$ \footnote{it actually does not suffice, we tacitly assume lemma that gives an isomorphism between terms of type $U$ and small, discrete, p.i. r.g of assemblies$^\dagger$} For brevity, let $V \define \Pi \pi S T$.\\
+
+Smallness follows by the closure under $\Pi$-types in the ambient set-theoretical universe $\cU$.\\
+
+For proof-irrelevance, take some $\gamma\R \in \Gamma$ and $f , g \in V\R(\gamma\R)$, s.t $\langle V\src(\gamma\R), V\tgt(\gamma\R) \rangle (f) = \langle V\src(\gamma\R), V\tgt(\gamma\R) \rangle (g)$. WTP $f = g$, by def. we get immediately that $f^{src} = g^{src}$ and $f^{tgt} = g^{tgt}$. 
+
+Given that $(f^{src}, f^{tgt}, r_f), (f^{src}, f^{tgt}, r_g) \in V\R(\gamma\R)$, note that , 
+\begin{align*}
+  \forall s \in S\R(\gamma\R). \langle T\src(\gamma\R, s), T\src(\gamma\R, s) \rangle  ( r_f(s)) = (f\O^{src}(S\src(\gamma\R)(s)), f\O^{tgt}(S\tgt(\gamma\R)(s)))\\
+  \forall s \in S\R(\gamma\R). \langle T\src(\gamma\R, s), T\src(\gamma\R, s) \rangle  ( r_g(s)) = (f\O^{src}(S\src(\gamma\R)(s)), f\O^{tgt}(S\tgt(\gamma\R)(s))
+\end{align*}
+Since $T$ is proof-irrelevant, it follows directly that $r_f = r_f$ and thus $f = g$.
 
 % \paragraph{Dependent pairs}
 
