@@ -6,7 +6,7 @@
 \def\definealg#1{\ea\gdef\csname alg#1\endcsname{\ensuremath{\mathscr{#1}}\xspace}}
 \foreachLetter{1}{27}{\definealg}
 
-\autodefs{\cCat\cSet\cRGph\cSet}
+\autodefs{\cCat\cSet\cRGph\cSet\bT\bU}
 
 \def\cAsm{\mathcal{A}\mathit{sm}^\dagger}
 
@@ -412,9 +412,11 @@ and $T \in Ty(\Gamma . U)$ as:
 \end{itemize}
 \begin{claim} $U$ is closed under $\Pi$ types.
 \end{claim}
-Given some r.g $\Gamma$ and $S \in Ty(\Gamma)$, $T \in Ty(\Gamma.S)$, it suffices to show that $\Pi \pi T S \in Ty(\Gamma)$ is a small, discrete and proof-irrelevant family of r.g. of assemblies$^\dagger$ \footnote{it actually does not suffice, we tacitly assume lemma that gives an isomorphism between terms of type $U$ and small, discrete, p.i. r.g of assemblies$^\dagger$} For brevity, let $V \define \Pi \pi S T$.\\
+Given some r.g $\Gamma$ and $S \in Ty(\Gamma)$, $T \in Ty(\Gamma.S)$, it suffices to show that $\Pi \pi T S \in Ty(\Gamma)$ is a small, discrete and proof-irrelevant family of r.g. of assemblies$^\dagger$ \footnote{it actually does not suffice, we implicitly assume a lemma that gives an isomorphism between terms of type $U$ and small, discrete, p.i. r.g of assemblies$^\dagger$} For brevity, let $V \define \Pi \pi S T$.\\
 
 Smallness follows by the closure under $\Pi$-types in the ambient set-theoretical universe $\cU$.\\
+
+To show discreteness, 
 
 For proof-irrelevance, take some $\gamma\R \in \Gamma$ and $f , g \in V\R(\gamma\R)$, s.t $\langle V\src(\gamma\R), V\tgt(\gamma\R) \rangle (f) = \langle V\src(\gamma\R), V\tgt(\gamma\R) \rangle (g)$. WTP $f = g$, by def. we get immediately that $f^{src} = g^{src}$ and $f^{tgt} = g^{tgt}$. 
 
@@ -424,6 +426,26 @@ Given that $(f^{src}, f^{tgt}, r_f), (f^{src}, f^{tgt}, r_g) \in V\R(\gamma\R)$,
   \forall s \in S\R(\gamma\R). \langle T\src(\gamma\R, s), T\src(\gamma\R, s) \rangle  ( r_g(s)) = (f\O^{src}(S\src(\gamma\R)(s)), f\O^{tgt}(S\tgt(\gamma\R)(s)))
 \end{align*}
 Since $T$ is proof-irrelevant, it follows directly that $r_f = r_g$ and thus $f = g$. 
+
+\paragraph{A free theorem}
+\begin{thm}
+  If $\Gamma \vdash M : \Pi a \overset{0}{:} \bU . \Pi \_ \overset{0}{:} \bT a . \bT a$, 
+  then for any $\Gamma \vdash X : \bU$, $\Gamma \vdash M X  = \mathbf{0} : \bT X \to \bT X$ is sound when interpreted in the model constructed so far.
+\end{thm}
+\textbf{Sketch } Instantiate $M\R$ with $\Gamma\rfl(\gamma\O)$ and uncurry once to get:\\
+$M\R(\Gamma\rfl(\gamma\O), -): \forall R \in \bU\R(\Gamma\rfl(\gamma\O)). \Pi 0 (T\R(\Gamma\rfl(\gamma\O)), R) . (T\R(\Gamma\rfl(\gamma\O)), R)$ (1)\\
+By the def. of terms in our model, we have:\\
+$U\src(\Gamma\rfl(\gamma\O)). M\R(\Gamma\rfl(\gamma\O)) = M\O(\gamma\O)$\\
+$U\tgt(\Gamma\rfl(\gamma\O)). M\R(\Gamma\rfl(\gamma\O)) = M\O(\gamma\O)$\\
+Expanding the def. in (1), we get:\\
+$$\forall A, B \in U\O(\gamma\O), \forall R \subseteq A\O \times B\O,$$
+$$(M\O(\gamma\O)(A\O),  M\O(\gamma\O)(B\O) ) \in (\Pi 0 R . R)\R$$
+Instantiate $B$ with $\mathbf{0}$.\\
+
+
+
+There is no $\Gamma \vdash M \overset{1}{:}\Pi a \overset{0}{:} \bU . \Pi \_ \overset{0}{:} \bT a . \bT a$
+
 
 % \paragraph{Dependent pairs}
 
