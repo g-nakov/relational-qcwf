@@ -391,7 +391,7 @@ For any reflexive graph $\Gamma$ , define the small, discrete, proof-irrelevant 
    $a \vDash_{U\O(\gamma)} S$ for any $a \in \algA$, $S \in \carr{U\O(\gamma)}$. 
    
   \item $\begin{aligned}
-  U\R(\gamma\O) \define \{(S,T, R, & R\src, R\tgt) \quad|\quad R \in \cU \\
+  U\R(\gamma\R) \define \{(S,T, R, & R\src, R\tgt) \quad|\quad R \in \cU \\
   & S,T \text{ are small discrete r.g. of assemblies} \\
   & \langle R\src, R\tgt\rangle : R \to \carr{S\O} \times \carr{T\O} \textit { is injective} \}
   \end{aligned}$
@@ -425,34 +425,47 @@ Given that $(f^{src}, f^{tgt}, r_f), (f^{src}, f^{tgt}, r_g) \in V\R(\gamma\R)$,
   \forall s \in S\R(\gamma\R). \langle T\src(\gamma\R, s), T\src(\gamma\R, s) \rangle  ( r_f(s)) = (f\O^{src}(S\src(\gamma\R)(s)), f\O^{tgt}(S\tgt(\gamma\R)(s)))\\
   \forall s \in S\R(\gamma\R). \langle T\src(\gamma\R, s), T\src(\gamma\R, s) \rangle  ( r_g(s)) = (f\O^{src}(S\src(\gamma\R)(s)), f\O^{tgt}(S\tgt(\gamma\R)(s)))
 \end{align*}
+
 Since $T$ is proof-irrelevant, it follows directly that $r_f = r_g$ and thus $f = g$. 
 
 \paragraph{A free theorem}
+%\begin{thm}
+%  If $\Gamma \vdash M : \Pi a \overset{0}{:} \bU . \Pi \_ \overset{0}{:} \bT a . \bT a$, 
+%  then for any $\Gamma \vdash X : \bU$, $\Gamma \vdash M X  = \mathbf{0} : \bT X \to \bT X$ is sound when interpreted in the model constructed so far.
+%\end{thm}
+%\textbf{Sketch } Instantiate $M\R$ with $\Gamma\rfl(\gamma\O)$ and uncurry once to get:\\
+%$M\R(\Gamma\rfl(\gamma\O), -): \forall R \in \bU\R(\Gamma\rfl(\gamma\O)). \Pi 0 (T\R(\Gamma\rfl(\gamma\O)), R) . (T\R(\Gamma\rfl(\gamma\O)), R)$ (1)\\
+%By the def. of terms in our model, we have:\\
+%$U\src(\Gamma\rfl(\gamma\O)). M\R(\Gamma\rfl(\gamma\O)) = M\O(\gamma\O)$\\
+%$U\tgt(\Gamma\rfl(\gamma\O)). M\R(\Gamma\rfl(\gamma\O)) = M\O(\gamma\O)$\\
+%Expanding the def. in (1), we get:\\
+%$$\forall A, B \in U\O(\gamma\O), \forall R \subseteq A\O \times B\O,$$
+%$$(M\O(\gamma\O)(A\O),  M\O(\gamma\O)(B\O) ) \in (\Pi 0 R . R)\R$$
+%Instantiate $B$ with $\mathbf{0}$.\\
+%
+
+\begin{definition}[No universal realizer]
+  Given a context $\Gamma$ and a type $T$, s.t $\Gamma \vdash  T$, the model $\cC$ constructed so far has no universal realizer iff $\bigcap\limits_{\gamma \in \llbracket\Gamma\rrbracket\O} \{ a \in \algA :  \text{for every x} \in \carr{\llbracket T\rrbracket \O(\gamma)}, a \vDash_{\llbracket T \rrbracket \O(\gamma\O)} x\}$ is empty.
+\end{definition}
+
 \begin{thm}
-  If $\Gamma \vdash M : \Pi a \overset{0}{:} \bU . \Pi \_ \overset{0}{:} \bT a . \bT a$, 
-  then for any $\Gamma \vdash X : \bU$, $\Gamma \vdash M X  = \mathbf{0} : \bT X \to \bT X$ is sound when interpreted in the model constructed so far.
+  Let $\Gamma$ be a context and $T \define \Pi a \overset{0}{:} \bU . \Pi \_ \overset{0}{:} \bT a . \bT a$  - a type. Assume the model has no universal realizers. There is no resourced term $M$ of that type - i.e. $\Gamma \vdash M \overset{1}{:} T$ does not hold in the model.
 \end{thm}
-\textbf{Sketch } Instantiate $M\R$ with $\Gamma\rfl(\gamma\O)$ and uncurry once to get:\\
-$M\R(\Gamma\rfl(\gamma\O), -): \forall R \in \bU\R(\Gamma\rfl(\gamma\O)). \Pi 0 (T\R(\Gamma\rfl(\gamma\O)), R) . (T\R(\Gamma\rfl(\gamma\O)), R)$ (1)\\
-By the def. of terms in our model, we have:\\
-$U\src(\Gamma\rfl(\gamma\O)). M\R(\Gamma\rfl(\gamma\O)) = M\O(\gamma\O)$\\
-$U\tgt(\Gamma\rfl(\gamma\O)). M\R(\Gamma\rfl(\gamma\O)) = M\O(\gamma\O)$\\
-Expanding the def. in (1), we get:\\
-$$\forall A, B \in U\O(\gamma\O), \forall R \subseteq A\O \times B\O,$$
-$$(M\O(\gamma\O)(A\O),  M\O(\gamma\O)(B\O) ) \in (\Pi 0 R . R)\R$$
-Instantiate $B$ with $\mathbf{0}$.\\
 
+Assume such term $M$, $\Gamma \vdash M \overset{1}{:} T$ exists. Fix some $\gamma \in \Gamma\O$ and consider the uncurried term $M'$, s.t $\Gamma, a \overset{O}{:} \bU, \_ \overset{0}: \bT a \vdash M' \overset{1}{:} \bT a$ and
+$$ M'\O(\gamma\O, a\O, \_) \define \textit{ let } ((f''\O, f''\R) , f'\R)= M\O(\gamma\O) \textit{ in } f''\O(\gamma\O, a\O, \_)$$
+$$ M'\R(\gamma\R, a\R, \_) \define \textit{ let } (f'^{\src}, f'^{\tgt}, (f''^{\src}, f''^{\tgt}, r)) = M\R(\gamma\R) \textit{ in } r(\gamma\R, a\R, \_)$$
 
+Fix some $\gamma\O \in \Gamma\O$. Spelling out explicitly the type of $M'\R$, ``instantiated'' at $\Gamma\rfl(\gamma\O)$ (or equivalently, of $r(\Gamma\rfl(\gamma\O), - , -)$ and suppressing the realizability information, we get that:
+$$M'\R(\Gamma\rfl(\gamma\O), -, -) : \forall a\R \in \bU\R(\Gamma\rfl(\gamma\O)). \bT\R(\Gamma\rfl(\gamma\O), a\R) \to \bT\R(\Gamma\rfl(\gamma\O), a\R)$$
+Unpacking the definition of $\bU\R(\Gamma\rfl(\gamma\O))$, we get (by conditions in \cref{def:fam-refl-graphs}):
+$$\forall S, T \in \bU\O(\gamma\O), \forall R \in \cU , R\src : R \to S\O, R\tgt : R \to T\O:$$
+$$R\src(M'\R(\Gamma\rfl(\gamma\O),(S,T,R, R\src, R\tgt), (s,t))) = M'\O(\gamma\O, S, s)$$
+$$R\tgt(M'\R(\Gamma\rfl(\gamma\O),(S,T,R, R\src, R\tgt), (s,t))) = M'\O(\gamma\O, T, t)$$
+Thus, we can conclude that 
+$$\forall S, T \in \bU\O(\gamma\O), \forall R \subseteq S \times T,  \forall (s,t) \in R, (M'\O(\gamma\O, S, s), M'\O(\gamma\O, T, t)) \in R$$
 
-There is no $\Gamma \vdash M \overset{1}{:}\Pi a \overset{0}{:} \bU . \Pi \_ \overset{0}{:} \bT a . \bT a$
-
-
-% \paragraph{Dependent pairs}
-
-
-
-
-
+We want to show that $M X x = x$ for type $X$ in $\bU$.  Pick $R \define \{(x, x) : x \in X \}$, such $R$ satisfies the condition above.
 %
 %\footnote{In Tarski's fashion we make distinction between types and terms by introducing a type U for codes of types and explicit decoder T}
 \printbibliography
