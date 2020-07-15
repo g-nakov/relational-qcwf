@@ -314,8 +314,8 @@ Define the semantic type $\Pi \pi S T$ as the family of assemblies over $\Gamma$
             & (f\O^{tgt},f\R^{tgt}) \in (\Pi\pi S T)\O(\Gamma\tgt(\gamma)),\\
             & r : \forall s \in S\R(\gamma). T\R(\gamma, s),\\     
             & \forall s \in S\R(\gamma). T\src(\gamma, s)( r (s)) = \widehat{f\O^{src}}(S\src(\gamma)(s)),\\
-            & \forall s \in S\R(\gamma). T\tgt(\gamma, s)( r (s)) = \widehat{f\O^{tgt}}(S\tgt(\gamma)(s))\footnote{\GN{THAT DOES NOT ACTUALLY WORK!}} \}
-      \end{align*}
+            & \forall s \in S\R(\gamma). T\tgt(\gamma, s)( r (s)) = \widehat{f\O^{tgt}}(S\tgt(\gamma)(s)) \}
+      \end{align*}\footnote{\GN{The extension in that definition DOES NOT actually WORK - !}}
 %    
 %    \subitem $a \vDash_Y (f^{src}, f^{tgt}, r)$ iff there exists $a\src, a\tgt, a\R$, s.t $a = [a\src, a\tgt, a\R]$ with $a\src \vDash_{(\Pi\pi S T)\O(\Gamma\src(\gamma))} f^{src}$, $a\tgt \vDash_{(\Pi\pi S T)\O(\Gamma\tgt(\gamma))} f^{tgt}$ and
 %    $$\forall s \in \carr{S\R(\gamma)}, b \in \algA. b \vDash_{S\R(\gamma)} s \implies a\R . !_\rho b \vDash_{T\R(\gamma,s)} r(s)$$
@@ -329,6 +329,8 @@ Define the semantic type $\Pi \pi S T$ as the family of assemblies over $\Gamma$
 \end{itemize}
 %To ensure $(\Pi \pi S T)$ is a well-defined family of r.g of assemblies w.r.t to \cref{def:fam-refl-graphs}, let $\gamma \in \Gamma\O$
 %%%%%%%%%%%%%%%%%%%%%%ee
+
+\GN{STOPPED REVISING HERE}
 
 Unwinding \cref{eq:dep-prod-qcwf}, we get 
 $$\{(M\O,M\R) : \forall (\gamma, s) \in (\Gamma. \pi S) . T(\gamma, s) \} \cong \{(N\O, N\R) : \forall \gamma \in \Gamma . (\Pi \pi S T)(\gamma)\}$$
@@ -463,6 +465,8 @@ Thus, we conclude that
 Let $X$ be some type, s.t $\Gamma \vdash X : \bU$. Consider the term $M$ instantiated at $\gamma\O$ and $X$ and $R^X \define \{(x,x) | x : X\}$. Substituting $X$ for $S$ and $T$, $R^X$ for $R$ in $(1)$ and applying currying, we get that for each $x : X$, $(M(\gamma\O, X(\gamma\O), x), M(\gamma\O, X(\gamma\O), x)) \in R$ holds. Hence $M(\gamma\O, X(\gamma\O), x) = x$.\\
 
 Now since $M \in RTm(\Gamma, T)$, $M$ is realizable - in particular, there exists an $a \in \algA$ that tracks $M(\gamma\O X(\gamma\O), -)$. By def.\ we get that $\forall x \in X\O, \forall b \in \algA. b \vDash_{\Gamma.0 X} (\gamma\O, x) \implies a . !_0 b \vDash_{X(\gamma\O)} M(\gamma\O, X(\gamma\O), x)$ - $a$ is a realizer for every element $x$ in $X\O(\gamma\O)$. But that is a contradiction, as no universal realizer exists for $X$ by assumption. Therefore no resourced term $M \overset{1}{:} T$ exists.
+
+\GN{RESUMED REVISING HERE}
 
 \begin{definition}[Separability of realizers]
   Let $\Gamma$ be a context and $S \in Ty(\Gamma)$. $S$ has separable realizers if for every $\gamma \in \Gamma\O$ and $x, y  \in |S\O(\gamma)|$ and $a \in \algA$, if $a \vDash_{S\O(\gamma)} x$ and $a \vDash_{S\O(\gamma)} y$, then $x = y$.
