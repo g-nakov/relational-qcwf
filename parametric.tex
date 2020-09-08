@@ -3,14 +3,14 @@
 
 \def\definecat#1{\ea\gdef\csname c#1\endcsname{\ensuremath{\mathcal{#1}}\xspace}}
 \foreachLetter{1}{27}{\definecat}
+
 \def\definealg#1{\ea\gdef\csname alg#1\endcsname{\ensuremath{\mathscr{#1}}\xspace}}
 \foreachLetter{1}{27}{\definealg}
 
 \autodefs{\cCat\cSet\cRGph\cSet\cORGph\bT\bU\dM}
 
-\def\cAsm{\mathcal{A}\mathit{sm}^*(\algA)}
+\def\cAsm{\mathcal{A}\mathit{sm}^\dagger(\algA)}
 \def\cFamORG{\mathcal{F}\mathit{am-}\mathcal{ORG}}
-
 
 \def\src{_{src}}
 \def\rfl{_{refl}}
@@ -19,15 +19,19 @@
 \renewcommand{\O}{_{O}}\alwaysmath{O}
 \newcommand{\R}{\ensuremath{_{R}}}
 
-\def\Assembly{Assembly$^*$\xspace}
-\def\Assemblies{Assemblies$^*$\xspace}
-\def\assembly{assembly$^*$\xspace}
-\def\assemblies{assemblies$^*$\xspace}
+\def\Assembly{Assembly$^\dagger$\xspace}
+\def\Assemblies{Assemblies$^\dagger$\xspace}
+\def\assembly{assembly$^\dagger$\xspace}
+\def\assemblies{assemblies$^\dagger$\xspace}
 
 \def\Asmrg{Reflexive graph with realisable objects\xspace}
 \def\Asmrgs{Reflexive graphs with realisable objects\xspace}
 \def\asmrg{reflexive graph with realisable objects\xspace}
 \def\asmrgs{reflexive graphs with realisable objects\xspace}
+
+% dirty fix, as section counter is bound to thm env 
+\renewcommand\thesubsection{\arabic{subsection}}
+\setcounter{subsection}{-1}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -38,23 +42,23 @@
 \begin{document}
 \maketitle
 
-Our aim is to build a concrete realisability model for QTT which allows for meta-reasoning with results derived from parametricity. To that end, a construction of a quantitative category with families (QCwF) is presented \cite{Atkey2018}. We follow the relational approach to types introduced by Reynolds for typed lambda calculus \cite{Ma1992} and later refined for dependent types theories \cite{Atkey2014a}.\\
+Our aim is to build a concrete realisability model for QTT which allows for meta-reasoning with results derived from parametricity. To that end, a construction of a quantitative category with families (QCwF, see \cite{Atkey2018}) is presented. We follow the relational approach to types introduced by Reynolds for typed lambda calculus \cite{Ma1992} and later refined for dependent types theories \cite{Atkey2014a}.\\
 
 Once and for all fix a usage semiring $R$ and an $R$-linear combinatory algebra \algA\footnote{In case some non-trivial properties of $\algA$ are required, we will assume that $\algA$ is a graph model (see \cite{Engeler1981})}.
 
-\subsection*{Taking stocks}
+\subsection{Preliminaries}
+We recall some basic structures used in constructing the model.
 \begin{definition}[\Assemblies]
   An \assembly \Gamma is a pair $(|\Gamma|, e)$ where $|\Gamma|$ is a carrier set and  $e$ is a realisability function $|\Gamma| \to \pow(\algA)$.
 \end{definition}
-Given some $\gamma \in |\Gamma|$, $e(\gamma)$ is interpreted as the set of witnesses for the existence of $\gamma$. To emphasize on that aspect, we write $a \vDash_\Gamma \gamma$ to denote $a \in e(\gamma)$. Moreover, let $\lfloor\Gamma\rfloor$ stand for the set of realisable elements - $\{ \gamma \in |\Gamma| : e_\Gamma(\gamma) \neq \emptyset \} \subseteq |\Gamma|$. \\
+Given some $\gamma \in |\Gamma|$, $e(\gamma)$ is interpreted as the set of witnesses for the existence of $\gamma$. To emphasize on that aspect, we write $a \vDash_\Gamma \gamma$ to denote $a \in e(\gamma)$. Moreover, let $\lfloor\Gamma\rfloor$ stand for the set of realisable elements - $\{ \gamma \in |\Gamma| : e_\Gamma(\gamma) \neq \emptyset \} \subseteq |\Gamma|$.\\
 
-\textbf{A morphism between two \assemblies $\Gamma$ and $\Delta$} is a function $f : \lfloor \Gamma \rfloor  \to |\Delta|$ that is realisable - there exists a realiser $a_f \in \algA$ that tracks the function $f$ in the following sense:
+\textbf{A morphism between two \assemblies $\Gamma$ and $\Delta$} is a function $f : |\Gamma| \to |\Delta|$ that is realisable - there exists a realiser $a_f \in \algA$ that tracks the function $f$ in the following sense:
 \begin{center}
-  for every $\gamma$ in $dom(f)$ and $a_\gamma$ in $\algA$,  $a_\gamma \vDash_\Gamma \gamma \implies a_f . a_\gamma \vDash_\Delta f(\gamma)$ holds.
+  for every $\gamma$ in $|\Gamma|$ and $a_\gamma$ in $\algA$,  $a_\gamma \vDash_\Gamma \gamma \implies a_f . a_\gamma \vDash_\Delta f(\gamma)$ holds.
 \end{center}
 
-Note that multiple realisers for the same function $f$ do not induce multiple morphisms. Let $\widehat{f} : |\Gamma| \to |\Delta|$ designate an extension of $f$ over $|\Gamma|$. Often instead of the \assembly morphism $f : X \to Y$, we may provide directly $\widehat{f}$ alongside a realiser for $f$.\\
-
+Note that multiple realisers for the same function $f$ do not induce multiple morphisms.\\ 
 Using these notions we can construct a category $\mathbf{\cAsm}$.
 
 \begin{definition}[Reflexive graph]
@@ -78,19 +82,19 @@ $G\O$ and $G\R$ stand for a set of objects and a set of relations, respectively.
 
 Reflexive graphs equipped with r.g.\ morphisms form \textbf{a category $\cRGph$}. The terminal object $\terminal\cRGph$ is $(\{\star\}, \{\star\}, id, id, id)$. \\
 
-We use reflexive graphs to give a dyadic interpretation of types in the spirit of \cite{Ma1992}.
+Reflexive graphs provide enough structure for a dyadic interpretation of types in the spirit of \cite{Ma1992}.
 
 
-\subsection*{Augmenting reflexive graphs with realisability information}
+\subsection{Reflexive graphs with realisability information}
 
-One could easily generalize reflexive graphs by considering object and relation components from arbitrary categories instead of $\cSet$. As our purpose is to build a relational model capable of exploiting realisability, we replace the set of objects with an \assembly and retain the $\cSet$-based representation of relations.
+One could easily generalize reflexive graphs by considering object and relation components from arbitrary categories instead of $\cSet$. As our purpose is to build a relational model incorporating realisability information, we replace the set of objects with an \assembly and retain the $\cSet$-based representation of relations.
 
 \begin{definition}[\Asmrg]
-  \footnote{\FNF{It's not easy, but we should think of a good name for this --- ``reflexive graph of $X$'' usually means ``reflexive graph in the category of $X$s'', i.e.\ where $G\O$ and $G\R$ are $X$s, and the maps are $X$ morphisms.}}
+  %\footnote{\FNF{It's not easy, but we should think of a good name for this --- ``reflexive graph of $X$'' usually means ``reflexive graph in the category of $X$s'', i.e.\ where $G\O$ and $G\R$ are $X$s, and the maps are $X$ morphisms.}}
   A \asmrg $G$ is a tuple $(G\O, G\R, G\rfl, G\src, G\tgt)$, where $G\O \in \ob\cAsm$, $G\R$ is a set and the functions $G\rfl: |G\O| \to G\R, \; G\src : G\R \to |G\O|, \; G\tgt : G\R \to |G\O|$ are such that the identities in \cref{def:refl-graph} are satisfied.
 \end{definition}
 
-Accordingly, \textbf{a morphism between two \asmrgs $G$ and $H$} is a pair $(f\O: G\O \to H\O, f\R : G\R \to H\R)$, s.t.\ there exists an extension $\widehat{f\O}$, s.t.\ $(\widehat{f\O}, f\R)$ is an $\cRGph$ morphism between the reflexive graphs $(|G\O|, G\R, G\rfl, G\src, G\tgt)$ and $(|H\O|, H\R, H\rfl, H\src, H\tgt)$.\\
+Accordingly, \textbf{a morphism between \asmrgs, $G$ and $H$}, is a pair $(f\O: G\O \to H\O, f\R : G\R \to H\R)$, s.t. $(f\O, f\R)$ is an $\cRGph$ morphism between the reflexive graphs $(|G\O|, G\R, G\rfl, G\src, G\tgt)$ and $(|H\O|, H\R, H\rfl, H\src, H\tgt)$.\\
 
 With these components, we obtain a category $\cORGph(\cAsm)$. By considering \asmrgs of shape $(X,|X|,id_X,id_X,id_X)$, we identify an isomorphic copy of $\cAsm$ inside $\cORGph(\cAsm)$.\\
 
@@ -99,7 +103,7 @@ A terminal object $\mathbf{1}_{\cORGph(\cAsm)}$ in $\cORGph(\cAsm)$ is a tuple $
 
 \begin{definition}[Family of \asmrgs]
   \label{def:fam-refl-graphs}
-  \footnote{\FNF{ditto here, namingwise}}
+  %\footnote{\FNF{ditto here, namingwise}}
   Let $\cC$ be a category with a terminal object. Given a reflexive graph $\Gamma \in \ob\cC$, a family of \asmrgs over $\Gamma$ is a tuple $S\define(S_O, S_R, S\rfl, S\src, S\tgt)$, where:
   \begin{itemize}[noitemsep]
     \item $S\O : \Gamma\O \to \cAsm$
@@ -118,16 +122,18 @@ A terminal object $\mathbf{1}_{\cORGph(\cAsm)}$ in $\cORGph(\cAsm)$ is a tuple $
 
 \textbf{A morphism $M$ between two families $S$ and $T$ of \asmrgs over $\Gamma$} is a pair $(M\O, M\R)$ of $\Gamma$-indexed collections of morphisms:
 \begin{itemize}[noitemsep]
-  \item $M\O \define \{f_\gamma : S\O(\gamma) \to T\O(\gamma) \}_{\gamma \in \Gamma\O}$ \footnote{\FNF{should be tracked?}}
+  \item $M\O \define \{f_\gamma : S\O(\gamma) \to T\O(\gamma) \}_{\gamma \in \Gamma\O}$
+  %\footnote{\FNF{should be tracked?}}
+  
   \item $M\R \define \{f_\gamma : S\R(\gamma) \to T\R(\gamma) \}_{\gamma \in \Gamma\R}$
 \end{itemize}
-such that there exists a collection of some fixed extensions $\widehat{M\O}\define \{\widehat{f_\gamma}\}_{\gamma \in \Gamma\O}$, for which the following identities are satisfied:
+s.t.\ the following identities are satisfied:
 \begin{itemize}[noitemsep]
-  \item $T\rfl(\widehat{M\O}(\gamma)(s_o)) = M\R(\Gamma\rfl(\gamma))(S\rfl(\gamma)(s_o))$ for every $\gamma \in \Gamma\O$, $s_o \in |S\O(\gamma)|$
+  \item $T\rfl(M\O(\gamma)(s_o)) = M\R(\Gamma\rfl(\gamma))(S\rfl(\gamma)(s_o))$ for every $\gamma \in \Gamma\O$, $s_o \in |S\O(\gamma)|$
   
-  \item $T\src(M\R (\gamma)(s_r)) = \widehat{M\O}(\Gamma\src(\gamma)) (S\src(\gamma)(s_r))$ for every $\gamma \in \Gamma\R$, $s_r \in S\R(\gamma)$
+  \item $T\src(M\R(\gamma)(s_r)) = M\O(\Gamma\src(\gamma)) (S\src(\gamma)(s_r))$ for every $\gamma \in \Gamma\R$, $s_r \in S\R(\gamma)$
   
-  \item $T\tgt(M\R (\gamma)(s_r)) = \widehat{M\O}(\Gamma\tgt(\gamma))(S\tgt(\gamma)(s_r))$ for every $\gamma \in \Gamma\R$, $s_r \in S\R(\gamma)$
+  \item $T\tgt(M\R (\gamma)(s_r)) = M\O(\Gamma\tgt(\gamma))(S\tgt(\gamma)(s_r))$ for every $\gamma \in \Gamma\R$, $s_r \in S\R(\gamma)$
 \end{itemize}
 Families of \asmrgs over $\Gamma$ and their morphisms forms a category $\cFamORG(\cAsm, \Gamma)$.\\
 
@@ -142,7 +148,7 @@ The terminal object $\terminal{\cFamORG(\cAsm, \Gamma)}$ is given by $(\lambda \
 %  \item given a context $\Gamma \in \ob\cRGph$, $\rho \in R$ and a type $S \in Ty(\Gamma)$, the resourced context extension $\Gamma.\rho S \in \ob{\cRGph(\cAsm(\algA))}$ makes use of the trackers for $src, tgt$ and $refl$ morphisms. (Note that these are not needed when building an ordinary CwF).
 %\end{itemize}
 
-\subsection*{A CwF from families of \asmrgs}
+\subsection{A CwF from families of \asmrgs}
 As a first step toward obtaining a relationally parametric realisability model of QTT, we construct a concrete CwF using families of \asmrgs.\\
 
 Consider the category $\cRGph$ with terminal object $\terminal{\cRGph}$.\\
@@ -191,10 +197,16 @@ Given a usage semiring $R$, a $R$-QCwF consists of:
   For an $\cL$ morphisms $f: \Gamma \to \Delta$ and types $S \in Ty(U\Gamma)$, a function $-\{f\} : RTm(\Delta, S) \to RTm(\Gamma, S\{f\})$, s. t. $U(-\{f\}) = (U(-))\{Uf\}$.
          
   \item Given $\Gamma \in \cL$, $\rho \in R$ and $S \in Ty(U\Gamma)$, an object $\Gamma. \rho S$, s.t $U(\Gamma. \rho S) = U\Gamma.S$.\\
-  Additionally, there exist the following natural transformations:
-  \subitem $emp_\pi : \lozenge \to \pi\lozenge$\footnote{..., s.t. $U(emp_\pi)=id_1$ \FNF{since 1 terminal, this is automatic?}}
-  \subitem $emp_+ : \lozenge \to \lozenge + \lozenge$\footnote{..., s.t. $U(emp_+)=id_1$ \FNF{ditto}}
+  Additionally, the following natural transformations exist:
+  
+  \subitem $emp_\pi : \lozenge \to \pi\lozenge$
+  %\footnote{..., s.t. $U(emp_\pi)=id_1$ \FNF{since 1 terminal, this is automatic?}}
+  
+  \subitem $emp_+ : \lozenge \to \lozenge + \lozenge$
+  %\footnote{..., s.t. $U(emp_+)=id_1$ \FNF{ditto}}
+  
   \subitem $ext_\pi : \pi\Gamma. (\pi\rho S) \to \pi(\Gamma. \rho S)$, s.t. $U(ext_\pi) = id$ 
+  
   \subitem $ext_+ : (\Gamma_1 + \Gamma_2).(\rho_1 + \rho_2)S \to \Gamma_1.\rho_1 S + \Gamma_2 . \rho_2 S$, s.t.  $U(ext_+) = id$ 
   
   \item Given $\Gamma \in \cL$, $S \in Ty(U\Gamma)$, there exists \label{def:qcwf-morphisms}:
@@ -207,13 +219,13 @@ Given a usage semiring $R$, a $R$-QCwF consists of:
 
 Now to construct the concrete QCwF, consider the CwF from previous section as the underlying category.\\
 
-Let $\cL := \cORGph(\cAsm)$, the category of \asmrgs\footnote{\FNF{``half-assemblied'' r.g.s (yes, we also need notation for them)}} and let $U$ be the functor $\cORGph(\cAsm) \to \cRGph$, sending the object \assembly to its underlying set, forgetting the realisability relation.\\
+Let $\cL := \cORGph(\cAsm)$, the category of \asmrgs%\footnote{\FNF{``half-assemblied'' r.g.s (yes, we also need notation for them)}} and let $U$ be the functor $\cORGph(\cAsm) \to \cRGph$, sending the object \assembly to its underlying set, forgetting the realisability relation.\\
 
-For the addition structure, let $\Gamma', \Gamma''$ be \asmrgs, s.t  $|\Gamma'\O|=|\Gamma''\O|$ and $\Gamma'\R=\Gamma''\R$ \footnote{\FNF{no \carr{\cdot} for $\R$ part}}. Construct the r.g. of assemblies $\Gamma \define \Gamma' + \Gamma''$, where:
+For the addition structure, let $\Gamma', \Gamma''$ be \asmrgs, s.t  $|\Gamma'\O|=|\Gamma''\O|$ and $\Gamma'\R=\Gamma''\R$ %\footnote{\FNF{no \carr{\cdot} for $\R$ part}}. Construct the r.g. of assemblies $\Gamma \define \Gamma' + \Gamma''$, where:
 \begin{itemize}
     \item $\Gamma\O \define (\carr{\Gamma'\O}, \vDash_\Gamma)$ with $ a \vDash_\Gamma \gamma$ iff there exist $x,y \in \algA$, s.t. $a = [x,y]$ and $x \vDash_{\Gamma'} \gamma$ and $ y \vDash_{\Gamma''} \gamma$.
 
-    \item $\Gamma\R\define \Gamma'\R (=\Gamma''\R)$. \footnote{\FNF{this is just $\Gamma\R = \Gamma'\R (= \Gamma''\R)$}}
+    \item $\Gamma\R\define \Gamma'\R (=\Gamma''\R)$. %\footnote{\FNF{this is just $\Gamma\R = \Gamma'\R (= \Gamma''\R)$}}
 
     \item $\Gamma_\sigma \define \Gamma'_\sigma$, where $\sigma \in \{src,\, tgt,\, refl \}$.
 \end{itemize}
@@ -226,12 +238,14 @@ Consider the scaling structure and let $\Gamma \define \rho(\Gamma')$ :
     \item again, scaling leaves unmodified $\Gamma_\sigma$ for $\sigma\in  \{src,\, tgt,\, refl \}$.
 \end{itemize}
 
-Let $RTm(\Gamma, S)$ be the collection of morphisms from the terminal family $\terminal{\cFamORG(\cAsm, \Gamma)}$ to $S$. Spelling this out and simplifying it, an element of $RTm(\Gamma, S)$ is a tuple of functions $(M\O: \forall \gamma_o \in \Gamma\O.\lfloor S\O(\gamma_o) \rfloor, M\R : \forall \gamma_r \in \Gamma\R. S\R(\gamma_r))$, s.t.\ the conditions from \cref{def:fam-refl-graphs} are satisfied, namely \footnote{\FNF{would be good for clarity to spell this out (up to isomorphism, removing the unit type element)}}:
+Let $RTm(\Gamma, S)$ be the collection of morphisms from the terminal family $\terminal{\cFamORG(\cAsm, \Gamma)}$ to $S$. Spelling this out and simplifying it, an element of $RTm(\Gamma, S)$ is a tuple of functions $(M\O: \forall \gamma_o \in \Gamma\O. |S\O(\gamma_o)|, M\R : \forall \gamma_r \in \Gamma\R. S\R(\gamma_r))$, s.t.\ the conditions from \cref{def:fam-refl-graphs} are satisfied, namely 
+%\footnote{\FNF{would be good for clarity to spell this out (up to isomorphism, removing the unit type element)}}:
 \begin{align*}
-\forall \gamma_o \in \Gamma\O. {S\rfl} (\widehat{M\O}(\gamma_o)) &= M\R(\Gamma\rfl(\gamma_o))\\
-\forall \gamma_r \in \Gamma\R. {S\src} (M\R(\gamma_r)) &= \widehat{M\O}(\Gamma\src(\gamma_r))\\
-\forall \gamma_r \in \Gamma\R. {S\tgt} (M\R(\gamma_r)) &= \widehat{M\O}(\Gamma\tgt(\gamma_r))
+\forall \gamma_o \in \Gamma\O. {S\rfl} (M\O(\gamma_o)) &= M\R(\Gamma\rfl(\gamma_o))\\
+\forall \gamma_r \in \Gamma\R. {S\src} (M\R(\gamma_r)) &= M\O(\Gamma\src(\gamma_r))\\
+\forall \gamma_r \in \Gamma\R. {S\tgt} (M\R(\gamma_r)) &= M\O(\Gamma\tgt(\gamma_r))
 \end{align*}
+such that $M\O$ is tracked - $\exists a_M \in \algA. \forall a_\gamma \in \algA, \gamma \in \Gamma\O.\, a_\gamma \vDash_{\Gamma_O} \gamma \implies a_m \cdot a_\gamma \vDash_{S(\gamma)} M\O(\gamma)$.
 
 $U_{\Gamma,S}$ is the just identity function.\\
 Substitution in terms is given by precomposition with $f : \Gamma \to \Delta$, let $-\{f\O\} \define \lambda M\O. \forall \gamma \in \Gamma . M\O(f(\gamma))$ and similarly, $-\{f\R\} \define \lambda M\R . \forall \gamma \in \Gamma . M\R(f(\gamma))$. The functor $U$ interacts nicely with the so-defined $-\{f\}$ as essentially the substitution in terms in the underlying CwF is defined in the same way.\\
@@ -241,12 +255,12 @@ Resourced context extension is given by $\Gamma . \rho S \define (\Gamma'\O, \Ga
   \item $|\Gamma'\O| \define \{(\gamma, x) : \gamma \in |\Gamma\O|, x \in S\O(\gamma) \}$\\
   $a \vDash_{\Gamma. \rho S} (\gamma, x)$ iff there exists $b, c \in \algA$, s.t $a = [b, !_\rho c]$, $b \vDash_{\Gamma} \gamma$ and $c \vDash_{S(\gamma)} \pi_1(\check{(\gamma, x)}) $, where $\check{(-)} : \Gamma . S \to U(\Gamma . S)$, $\check{(-)} \define id$ as the set-theoretic part of the extensions in the CwF and $\cL$ is the same by definition.
   
-  \item $\Gamma'\R \define \{(\gamma, r) : \gamma \in \Gamma\R, r \in S\R(\gamma)\}$ \footnote{\FNF{no realizability anymore}}
+  \item $\Gamma'\R \define \{(\gamma, r) : \gamma \in \Gamma\R, r \in S\R(\gamma)\}$ %\footnote{\FNF{no realizability anymore}}
   
   \item Each $\Gamma'_\sigma$ is defined pointwise.
 \end{itemize}
             
-The natural transformation $emp_\pi : \lozenge \to \pi \lozenge$ is given by the identity functions on both the object and relational part. It is realised by $K. !_\rho I$.
+The natural transformation $emp_\pi : \lozenge \to \pi \lozenge$ is given by the identity functions on both the object and relational part. It is realised by $K . !_\rho I$.
 
 We list the realisers for the remaining transformations:
 \begin{itemize}[noitemsep]
@@ -265,16 +279,14 @@ Finally, we construct the morphisms, listed in \cref{def:qcwf-morphisms}:
   
   \item Let $a^\sigma_f$ realize $f_\sigma$, then $wk(f, \rho S') \define \lambda (\gamma, s). (f (\gamma), s)$ is realized by $\lambda^* q. \textit{let }[x, y] = q \textit{ in } [a^\sigma_f . x , y]$
   
-  \item given a $M_\sigma \in RTm(\Gamma, S) = M_\sigma : \forall \gamma \in U(\Gamma_\sigma). S_\sigma(\gamma)$ with realizers $a^\sigma_m$, let $\overline{\rho M}_\sigma \define \lambda \gamma. (\gamma, M_\sigma(\gamma))$ realized by $\lambda^* q. \textit{let }[x, y] = q \textit{ in } [x, F_\rho.(!_\rho a^\sigma_m).y]$   
+  \item given a $M_\sigma \in RTm(\Gamma, S)$, $M_\sigma : \forall \gamma \in U(\Gamma_\sigma). S_\sigma(\gamma)$ with realizers $a^\sigma_m$, let $\overline{\rho M}_\sigma \define \lambda \gamma. (\gamma, M_\sigma(\gamma))$ realized by $\lambda^* q. \textit{let }[x, y] = q \textit{ in } [x, F_\rho.(!_\rho a^\sigma_m).y]$   
   
   \item given a $M_\sigma \in Tm(U\Gamma, S) = M_\sigma : \forall \gamma \in U\Gamma_\sigma. S_\sigma(\gamma)$, let $\overline{M}_\sigma \define \lambda \gamma. (\gamma, M_\sigma(\check\gamma))$ realized by the $K$ combinator.
 \end{itemize}
 
 From now on, we refer to the constructed model as $\dM$.
 
-\subsection*{Type formers}
-
-% \paragraph{Universe of small types}
+\subsection{Type formers}
 
 \begin{definition}[Dependent function types a QCwF]
   \label{def:prod-types}
@@ -296,27 +308,29 @@ Define the semantic type $\Pi \pi S T$ as the family of assemblies over $\Gamma$
     \subitem
         $\begin{aligned}
           X \define \{ (f\O,& f\R) \quad | \quad \\ 
-          & f\O : \forall s \in \lfloor S\O(\gamma) \rfloor.T\O(\gamma, s),\\
+          & f\O : \forall s \in |S\O(\gamma)|.T\O(\gamma, s),\\
           & f\R : \forall r \in S\R(\Gamma\rfl(\gamma)). T\R(\Gamma\rfl(\gamma), r),\\
-          & \exists \widehat{f\O} .\quad  (\forall s \in S\O(\gamma). T\rfl(\gamma, s)(\widehat{f\O} (s)) = f\R(S\rfl(\gamma)(s)) \\
-          & \wedge\, \forall r \in S\R(\Gamma\rfl(\gamma)). T\src(\Gamma\rfl(\gamma),r)(f\R (r)) = \widehat{f\O}(S\src(\Gamma\rfl(\gamma))(r)) \\
-          & \wedge\, \forall r \in S\R(\Gamma\rfl(\gamma)). T\tgt(\Gamma\rfl(\gamma),r)(f\R (r)) = \widehat{f\O}(S\tgt(\Gamma\rfl(\gamma))(r)))  \}
+          & \forall s \in S\O(\gamma). T\rfl(\gamma, s)(f\O(s)) = f\R(S\rfl(\gamma)(s)), \\
+          & \forall r \in S\R(\Gamma\rfl(\gamma)). T\src(\Gamma\rfl(\gamma),r)(f\R (r)) = f\O(S\src(\Gamma\rfl(\gamma))(r)), \\
+          & \forall r \in S\R(\Gamma\rfl(\gamma)). T\tgt(\Gamma\rfl(\gamma),r)(f\R (r)) = f\O(S\tgt(\Gamma\rfl(\gamma))(r))  \}
         \end{aligned}$\\
     
     \subitem $a \vDash_X (f\O, f\R)$ iff
-    $$\forall s \in \lfloor{S\O(\gamma)}\rfloor, b \in \algA . b \vDash_{S\O(\gamma)} s \implies a . !_\rho b \vDash_{T\O(\gamma,s)} f\O(s)$$
+    $\forall s \in |S\O(\gamma)|, a_s \in \algA . a_s \vDash_{S\O(\gamma)} s \implies a \cdot !_\pi a_s \vDash_{T\O(\gamma,s)} f\O(s)$.
+    
     Note that $f\R$ does not contribute any realisability information to $\vDash_X$.
     
-    \item
-     \begin{align*}
-           (\Pi \pi S T)\R(\gamma)  \define \{( (f\O^{src}, \,& f\R^{src}), (f\O^{tgt}, f\R^{tgt}), r)  \quad|\quad \\
+    \item  $(\Pi \pi S T)\R(\gamma) \define$
+      \subitem 
+        $\begin{aligned}
+          \{( (f\O^{src}, \,& f\R^{src}), (f\O^{tgt}, f\R^{tgt}), r)  \quad|\quad \\
             & (f\O^{src},f\R^{src}) \in (\Pi\pi S T)\O(\Gamma\src(\gamma)),\\
             & (f\O^{tgt},f\R^{tgt}) \in (\Pi\pi S T)\O(\Gamma\tgt(\gamma)),\\
             & r : \forall s \in S\R(\gamma). T\R(\gamma, s),\\     
-            & \forall s \in S\R(\gamma). T\src(\gamma, s)( r (s)) = \widehat{f\O^{src}}(S\src(\gamma)(s)),\\
-            & \forall s \in S\R(\gamma). T\tgt(\gamma, s)( r (s)) = \widehat{f\O^{tgt}}(S\tgt(\gamma)(s)) \}
-      \end{align*}\footnote{\GN{The extension in that definition DOES NOT actually WORK - !}}
-%    
+            & \forall s \in S\R(\gamma). T\src(\gamma, s)( r (s)) = f\O^{src}(S\src(\gamma)(s)),\\
+            & \forall s \in S\R(\gamma). T\tgt(\gamma, s)( r (s)) = f\O^{tgt}(S\tgt(\gamma)(s)) \}
+        \end{aligned}$
+      
 %    \subitem $a \vDash_Y (f^{src}, f^{tgt}, r)$ iff there exists $a\src, a\tgt, a\R$, s.t $a = [a\src, a\tgt, a\R]$ with $a\src \vDash_{(\Pi\pi S T)\O(\Gamma\src(\gamma))} f^{src}$, $a\tgt \vDash_{(\Pi\pi S T)\O(\Gamma\tgt(\gamma))} f^{tgt}$ and
 %    $$\forall s \in \carr{S\R(\gamma)}, b \in \algA. b \vDash_{S\R(\gamma)} s \implies a\R . !_\rho b \vDash_{T\R(\gamma,s)} r(s)$$
 %     
@@ -327,14 +341,10 @@ Define the semantic type $\Pi \pi S T$ as the family of assemblies over $\Gamma$
     
     \item $(\Pi \pi S T)\tgt(\gamma) \define \lambda (f^{src}, f^{tgt}, r), f^{tgt}$ for $\gamma \in \Gamma\R$.
 \end{itemize}
-%To ensure $(\Pi \pi S T)$ is a well-defined family of r.g of assemblies w.r.t to \cref{def:fam-refl-graphs}, let $\gamma \in \Gamma\O$
-%%%%%%%%%%%%%%%%%%%%%%ee
 
-\GN{STOPPED REVISING HERE}
-
-Unwinding \cref{eq:dep-prod-qcwf}, we get 
+Unwinding \cref{eq:dep-prod-qcwf}, we get  
 $$\{(M\O,M\R) : \forall (\gamma, s) \in (\Gamma. \pi S) . T(\gamma, s) \} \cong \{(N\O, N\R) : \forall \gamma \in \Gamma . (\Pi \pi S T)(\gamma)\}$$
-where the terms are of the following type structure:
+where the terms have the following elaborated types:
 \begin{align*}
   M\O &: \forall (\gamma, s) \in (\Gamma. \pi S)\O . T\O(\gamma, s) \\
   M\R &: \forall (\gamma, r) \in (\Gamma. \pi S)\R . T\R(\gamma, s) \\
@@ -359,9 +369,9 @@ $$a_n \define \lambda^* y. (\lambda^* s . (a_m . [y, s]))$$
 The conditions $U \comp \Lambda_\cL = \Lambda \comp U$ and $U \comp \Lambda^{-1}_\cL = \Lambda^{-1}\comp U$ follow trivially.
 
 \paragraph*{Universe of small types}
-A plausible candidate for the universe $U$ is the general definition in \cite{fill}:\\
+A plausible candidate for the universe $U$ is given by  the general construction:\\
 $\begin{aligned}
-  U\O &\define \text{ the set of small r.g. } \\
+  U\O &\define \text{ the set of small reflexive graphs} \\
   U\R &\define \{(A, B, R, R\src, R\tgt) : R \in \cU, R\src: R \to A\O, R\tgt : R \to A\O, A,B \text{ are small r.g.}   \}
 \end{aligned}$.\\
 
@@ -386,12 +396,13 @@ A family of reflexive graphs of assemblies $S$ over $\Gamma$ is
 For any reflexive graph $\Gamma$ , define the small, discrete, proof-irrelevant universe $U \in Ty(\Gamma)$ and the type decoder $T \in Ty(\Gamma . U)$ as:
 \begin{itemize}
   \item $\carr{U\O(\gamma)} \define \text{the set of small, discrete r.g. of assemblies}$ \\
-   $a \vDash_{U\O(\gamma)} S$ for $a \in \algA$, $a = I$ and $S \in \carr{U\O(\gamma)}$. \footnote{\FNF{Again maybe $a \vdash S$ iff $a = I$ is better for linearity reasons?}}
+   $a \vDash_{U\O(\gamma)} S$ for $a \in \algA$, $a = I$ and $S \in \carr{U\O(\gamma)}$. 
    
-  \item $\begin{aligned}
-  U\R(\gamma\R) \define \{(S,T, R, & R\src, R\tgt) \quad|\quad R \in \cU \\
-  & S,T \text{ are small discrete r.g. of assemblies} \\
-  & \langle R\src, R\tgt\rangle : R \to \carr{S\O} \times \carr{T\O} \textit { is injective} \}
+  \item $U\R(\gamma\R) \define$\\
+  $\begin{aligned}
+   \quad \{(S,T, R, & R\src, R\tgt) \quad|\quad R \in \cU \\
+    & S,T \text{ are small discrete r.g. of assemblies} \\
+    & \langle R\src, R\tgt\rangle : R \to \carr{S\O} \times \carr{T\O} \textit { is injective} \}
   \end{aligned}$
   
   \item $U\rfl(\gamma\R)(S) \define (S, \carr{S}, S\rfl, S\src, S\tgt)$
@@ -423,7 +434,10 @@ Given that $(f^{src}, f^{tgt}, r_f), (f^{src}, f^{tgt}, r_g) \in V\R(\gamma\R)$,
 
 Since $T$ is proof-irrelevant, it follows directly that $r_f = r_g$ and thus $f = g$. 
 
-\paragraph{A free theorem}
+\paragraph*{Reduced $\Pi$ types - $\Pi^R \pi S T$}
+There is plethora of problems with the definition of $\Pi$ types. In order to satisfy the bijections posited in $\cref{def:prod-types}$, we had to include too many inhabitants of $(\Pi\pi S T)\O$. This leads to an internal conflict w.r.t realisability - some of the elements might not be realised at all, while others might share the same realiser. To see the latter, consider pairs $(f\O, f\R), (f'\O, f'\R) \in |(\Pi\pi S T)\O(\gamma)|$, such that $f\O$ and $f'\O$ have identical behaviour on $\lfloor S\O(\gamma) \rfloor$, but there exists some $s \in |S\O(\gamma)$, s.t $f\O(\gamma, s) \neq f'\O(\gamma,s)$.
+
+\subsection{Some (free) theorems}
 %\begin{thm}
 %  If $\Gamma \vdash M : \Pi a \overset{0}{:} \bU . \Pi \_ \overset{0}{:} \bT a . \bT a$, 
 %  then for any $\Gamma \vdash X : \bU$, $\Gamma \vdash M X  = \mathbf{0} : \bT X \to \bT X$ is sound when interpreted in the model constructed so far.
@@ -466,8 +480,6 @@ Let $X$ be some type, s.t $\Gamma \vdash X : \bU$. Consider the term $M$ instant
 
 Now since $M \in RTm(\Gamma, T)$, $M$ is realizable - in particular, there exists an $a \in \algA$ that tracks $M(\gamma\O X(\gamma\O), -)$. By def.\ we get that $\forall x \in X\O, \forall b \in \algA. b \vDash_{\Gamma.0 X} (\gamma\O, x) \implies a . !_0 b \vDash_{X(\gamma\O)} M(\gamma\O, X(\gamma\O), x)$ - $a$ is a realizer for every element $x$ in $X\O(\gamma\O)$. But that is a contradiction, as no universal realizer exists for $X$ by assumption. Therefore no resourced term $M \overset{1}{:} T$ exists.
 
-\GN{RESUMED REVISING HERE}
-
 \begin{definition}[Separability of realizers]
   Let $\Gamma$ be a context and $S \in Ty(\Gamma)$. $S$ has separable realizers if for every $\gamma \in \Gamma\O$ and $x, y  \in |S\O(\gamma)|$ and $a \in \algA$, if $a \vDash_{S\O(\gamma)} x$ and $a \vDash_{S\O(\gamma)} y$, then $x = y$.
 \end{definition}
@@ -488,6 +500,15 @@ Fix some $(f\O, f\R) \in \lfloor V\O \rfloor$. To find a realiser of $g\O(\gamma
 As for $h\O(\gamma_o)$, we must first ensure that $h\O$ outputs well-defined inhabitants of $V\O(\gamma_o)$. Notice that both $f' \define \lambda a_o. b\O$ and $f'' \define \lambda a_r. B\rfl(b\O)$ are well-typed and we can easily verify they satisfy the conditions in \cref{def:prod-types} by direct substitution (where the extension of $f'$ is the natural extension over $|A\O|$). To construct the realiser of $f'$, let $a_b \vDash_{B\O(\gamma_o)} b\O$ (such $a_b$ exists due to $b\O \in \lfloor B\O(\gamma_o)\rfloor)$, then $K. a_b$ realises $f'$.\\
 
 Let $b^* \in \lfloor B\O(\gamma_o) \rfloor$, by def. we have that $ (g\O \comp h\O)(\gamma_o, b^*) = b^*$. As for the converse direction, let $(h\O \comp  g\O)(\gamma_o)(f\O, f\R)=(f'\O, f'\R)$ for some $(f\O, f\R) \in V\O(\gamma_o)$. By (1), we show only that $f\O = f'\O$. As $f\O$ is a constant function by (2), expand the definition of $h_o$ to obtain immediately $f\o = f'\O$.
+
+\newpage
+%$|\Pi^R \pi S T|(\gamma) = \{f : S \to T\ | \exists a_f .\; a \vDash_{S(\gamma)} x \implies a_f  \cdot !_\pi a \vDash_{T(\gamma, x)} f(x) \}$
+%
+%$a \vDash_{\Pi^R \pi S T(\gamma)}  f = \exists a_f .\; a \vDash_{S(\gamma)} x \implies a_f  \cdot !_\pi a \vDash_{T(\gamma, x)} f(x)$
+
+\begin{center}
+
+\end{center}
 
 %\footnote{In Tarski's fashion we make distinction between types and terms by introducing a type U for codes of types and explicit decoder T}
 \printbibliography
