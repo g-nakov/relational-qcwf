@@ -435,7 +435,45 @@ Given that $(f^{src}, f^{tgt}, r_f), (f^{src}, f^{tgt}, r_g) \in V\R(\gamma\R)$,
 Since $T$ is proof-irrelevant, it follows directly that $r_f = r_g$ and thus $f = g$. 
 
 \paragraph*{Reduced $\Pi$ types - $\Pi^R \pi S T$}
-There is plethora of problems with the definition of $\Pi$ types. In order to satisfy the bijections posited in $\cref{def:prod-types}$, we had to include too many inhabitants of $(\Pi\pi S T)\O$. This leads to an internal conflict w.r.t realisability - some of the elements might not be realised at all, while others might share the same realiser. To see the latter, consider pairs $(f\O, f\R), (f'\O, f'\R) \in |(\Pi\pi S T)\O(\gamma)|$, such that $f\O$ and $f'\O$ have identical behaviour on $\lfloor S\O(\gamma) \rfloor$, but there exists some $s \in |S\O(\gamma)$, s.t $f\O(\gamma, s) \neq f'\O(\gamma,s)$.
+Our proposed definition of $\Pi$ types give rise to few subtle issues with realisability. Ideally, the elements of an \assembly and their realisers are in 1:1 correspondence. But clearly this is not the case with $\Pi$ types:
+\begin{itemize}[noitemsep]
+  \item[-] $|(\Pi \pi S T)\O(-)|$ contains all set-theoretic functions $f: (s : S) \to T $, so some elements do not have realisers
+  
+  \item[-] two distinct functions $f, f' : (s : S) \to T$ might have identical behaviour on $\lfloor S \rfloor$ but differ on some element of $|S|\setminus \lfloor S \rfloor$. Thus $f$ and $f'$ will share the same realiser $a$.
+\end{itemize}
+To remedy this situation one might try to ``prune'' some of the elements of $|(\Pi \pi S T)\O(-)|$ and ensure that terms are to be defined in ``nice enough'' contexts.
+
+Formalizing on these considerations, we introduce a new reduced function type, a derivative of the standard $\Pi \pi S T$ types with the main difference being that realisability is now internalised in the object \assembly part:\\
+
+$(\Pi^R\pi S T)\O(\gamma\O) \define (X, \vDash_X)$, where
+\begin{flalign*}
+X \define\quad &\{ (f\O, f\R) \quad | \quad  f\O : \forall s \in |S\O(\gamma)|.T\O(\gamma, s),\quad \dots&& \\
+& \quad \exists a_f \in \algA. \forall s \in |S\O(\gamma)|, a_s \in \algA. a_s \vDash_{S\O(\gamma)} s \implies a_f \cdot !_{\pi} a_s \vDash_{T\O(\gamma,s)} f\O(s),&& \\
+&\dots\}&& 
+\end{flalign*}
+
+A new operation on resourced contexts, $\mathbf{R}$, takes care of removing any nonrealisable element.
+
+The functor is defined on objects as:
+\begin{flalign*}
+&\mathbf{R} : \cORGph(\cAsm) \to \cORGph(\cAsm)&& \\
+&\mathbf{R} (X\O, X\R, X\rfl, X\src, X\tgt) = ((\lfloor X\O \rfloor, \vDash_X), X\R, X\rfl, X\src, X\tgt)&&
+\end{flalign*}
+and extends naturally to $\cORGph(\cAsm)$ morphisms. It can be also endowed with comonadic structure by observing we have a canonical choice for the natural transformations $\mathbf{R}(X) \to X$ and $\mathbf{R}(X) \to \mathbf{R}(\mathbf{R}(X))$, namely the canonical injection and identity. Also observe that the functors $!_\pi$ commute with $\mathbf{R}$, particularly $!_0(\mathbf{R}(X))=\mathbf{R}(!_0(X))$.\\
+
+On the surface level, we have the usual type formation rule in the syntax:
+\begin{center}
+  \centering
+  \infer[\text{reduced } \Pi]{0\Gamma \vdash \Pi^R \pi S T}{0\Gamma \vdash S & 0\Gamma, x \overset{0}{:} S \vdash T}
+\end{center}
+
+However, the abstraction rule differs from the standard $\Pi$-type. In general, given an unresourced term $M$, $\Gamma, x \overset{0}: S \vdash M \overset{0}: T$, one cannot find a corresponding $\lambda$ term, $\Gamma \vdash (\lambda x \overset{\pi}: S . M) \overset{0}{:} \Pi^R \pi S T$. That is to say, no bijection on the object level exists between $f_M : \forall (\gamma, s). T(\gamma, s)$ and $f_\lambda :\forall \gamma . (\Pi^R \pi S T)\O(\gamma)$ as the latter function carries some notion of realisability while the former does not.
+
+Such bijection exists in the $1$ fragment, though. Thus, there is the reduced abstraction rule:
+\begin{center}
+  \centering
+  \infer[\text{reduced Lam}]{\mathbf{R}(\Gamma) \vdash (\lambda x \overset{\pi}: S. T) \overset{1}: \Pi^R \pi S T}{\Gamma, x \overset{\pi}{:} S \vdash M \overset{1}:T}
+\end{center}
 
 \subsection{Some (free) theorems}
 %\begin{thm}
