@@ -466,7 +466,6 @@ On the surface level, we have the usual type formation rule in the syntax:
   \centering
   \infer[\text{reduced } \Pi]{0\Gamma \vdash \Pi^R \pi S T}{0\Gamma \vdash S & 0\Gamma, x \overset{0}{:} S \vdash T}
 \end{center}
-
 However, the abstraction rule differs from the standard $\Pi$-type. In general, given an unresourced term $M$, $\Gamma, x \overset{0}: S \vdash M \overset{0}: T$, one cannot find a corresponding $\lambda$ term, $\Gamma \vdash (\lambda x \overset{\pi}: S . M) \overset{0}{:} \Pi^R \pi S T$. That is to say, no bijection on the object level exists between $f_M : \forall (\gamma, s). T(\gamma, s)$ and $f_\lambda :\forall \gamma . (\Pi^R \pi S T)\O(\gamma)$ as the latter function carries some notion of realisability while the former does not.
 
 Such bijection exists in the $1$ fragment, though. Thus, there is the reduced abstraction rule:
@@ -474,6 +473,26 @@ Such bijection exists in the $1$ fragment, though. Thus, there is the reduced ab
   \centering
   \infer[\text{reduced Lam}]{\mathbf{R}(\Gamma) \vdash (\lambda x \overset{\pi}: S. T) \overset{1}: \Pi^R \pi S T}{\Gamma, x \overset{\pi}{:} S \vdash M \overset{1}:T}
 \end{center}
+
+
+To verify it is sound, suppose we are given a function $f_m : \forall (\gamma , s) \in |\Gamma. \pi S|\O. T(\gamma, s)$ and its tracker $a_m \in \algA$. Unwinding the latter, we get :
+$$\forall \gamma \in |\Gamma\O|, s \in |S\O(\gamma)|, a_\gamma, a_s \in \algA, a_\gamma \vDash_{\Gamma\O} \gamma \land a_s \vDash_{S\O(\gamma)} s \implies a_m \cdot [a_\gamma, !_\pi a_s] \vDash_{T\O(\gamma, s)} f_m(\gamma, s)$$
+Now we have to construct an inhabitant $(f\O, f\R), $ of $\Pi^R \pi S T$. Focus only on the object part and let $f\O \define \lambda s \overset{\pi}{:} S. f_m(\gamma, s)$. Its realiser is $a_f$ must satisfy
+
+$$ \forall s \in |S\O(\gamma)|, a_s \in \algA . a_s \vDash_{S\O(\gamma)} s \implies a_f \cdot !_\pi a_s \vDash_{T(\gamma, s)} f_m(\gamma, s) $$
+
+A plausible solution is $a_f \define \lambda^* x. a_m \cdot [a_\gamma, a_s]$. Observe that in order $a_f$ to be well-defined, $a_\gamma$ must always exist. This is guaranteed by the application of $\mathbf{R}$ to the context $\Gamma$ in the conclusion.\\
+
+Finally, we also have an altered application rule as well:\\
+\infer[\text{App}]{\Gamma_1 + \pi\Gamma_2 \vdash App_{(\Pi^R\pi S T)}(M,N) \overset{\sigma}:T[N/x]}{
+  \Gamma_2 \vdash N \overset{\sigma'}: S
+  &
+  \deduce{0\Gamma_1 = 0\Gamma_2}{
+    \Gamma_1 \vdash M \overset{\sigma}: \Pi^R \pi S T
+  }
+  &
+  \sigma'= 0 \iff (\pi = 0 \lor \sigma = 0)
+}
 
 \subsection{Some (free) theorems}
 %\begin{thm}
