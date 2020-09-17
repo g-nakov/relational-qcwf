@@ -505,6 +505,18 @@ $(t_m, \_) : \forall \gamma \in |\Gamma\O|. (\Pi^R\pi S T)\O(\gamma)$, $t_n : \f
 
 Although introducing $\Pi^R$ types was a step into right direction, we have not quite yet guaranteed bijection between elements of some \assembly and their realisers. To that end, we will semantically identify the types which enjoy that property (w.r.t their object part).
 
+\begin{definition}[Comodest set/Distinct realisers ?]
+  Let $A$ be an \assembly.  $A$ has distinct realisers if for every $x, y$ in $|A|$, $a \in \algA$, the following holds 
+$$a \vDash_A x \land a \vDash_A y \implies x = y $$
+\end{definition}
+Let $S$ be a family of \asmrgs over some reflexive graph $\Gamma$. $S$ has distinct realisers if for every $\gamma \in \Gamma\O$, $S\O(\gamma)$ has distinct realisers.
+
+A much weaker property  is:
+\begin{definition}[No universal realiser]
+    Let $A$ be an \assembly.  $A$ has no universar realiser if for every $a \in \algA$, there is some $x \in \lfloor A \rfloor$, s.t.\ $a \not\vDash_A x$. 
+\end{definition}
+Accordingly, a family of \asmrgs $S$ over reflixe graph $\Gamma$ has no universal realiser if for every $\gamma \in \Gamma\O$, $S\O(\gamma)$ has no universal realiser.
+
 \begin{claim}
   $U^R$ is closed under $\Pi^R$ types.
 \end{claim}
@@ -551,9 +563,7 @@ Thus, we conclude that
 
 Let $X$ be some type, s.t $\Gamma \vdash X : \bU$. Consider the term $M$ instantiated at $\gamma\O$ and $X$ and $R^X \define \{(x,x) | x : X\}$. Substituting $X$ for $S$ and $T$, $R^X$ for $R$ in $(1)$ and applying currying, we get that for each $x : X$, $(M(\gamma\O, X(\gamma\O), x), M(\gamma\O, X(\gamma\O), x)) \in R$ holds. Hence $M(\gamma\O, X(\gamma\O), x) = x$.\\
 
-Now since $M \in RTm(\Gamma, T)$, $M$ is realizable - in particular, there exists an $a \in \algA$ that tracks $M(\gamma\O X(\gamma\O), -)$. By def.\ we get that $\forall x \in X\O, \forall b \in \algA. b \vDash_{\Gamma.0 X} (\gamma\O, x) \implies a . !_0 b \vDash_{X(\gamma\O)} M(\gamma\O, X(\gamma\O), x)$ - $a$ is a realizer for every element $x$ in $X\O(\gamma\O)$. But that is a contradiction, as no universal realizer exists for $X$ by assumption. Therefore no resourced term $M \overset{1}{:} T$ exists.
-
-\begin{definition}[Separability of realizers]
+Now since $M \in RTm(\Gamma, T)$, $M$ is realizable - in particular, there exists an $a \in \algA$ that tracks $M(\gamma\O X(\gamma\O), -)$. By def.\ we get that $\forall x \in X\O, \forall b \in \algA. b \vDash_{\Gamma.0 X} (\gamma\O, x) \implies a . !_0 b \vDash_{X(\gamma\O)} M(\gamma\O, X(\gamma\O), x)$ - $a$ is a realizer for every element $x$ in $X\O(\gamma\O)$. But that is a contradiction, as no universal realizer exists for $X$ by assumption. Therefore no resourced term $M \overset{1}{:} T$ exists.\begin{definition}[Separability of realizers]
   Let $\Gamma$ be a context and $S \in Ty(\Gamma)$. $S$ has separable realizers if for every $\gamma \in \Gamma\O$ and $x, y  \in |S\O(\gamma)|$ and $a \in \algA$, if $a \vDash_{S\O(\gamma)} x$ and $a \vDash_{S\O(\gamma)} y$, then $x = y$.
 \end{definition}
 
