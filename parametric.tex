@@ -475,24 +475,40 @@ Such bijection exists in the $1$ fragment, though. Thus, there is the reduced ab
 \end{center}
 
 
-To verify it is sound, suppose we are given a function $f_m : \forall (\gamma , s) \in |\Gamma. \pi S|\O. T(\gamma, s)$ and its tracker $a_m \in \algA$. Unwinding the latter, we get :
-$$\forall \gamma \in |\Gamma\O|, s \in |S\O(\gamma)|, a_\gamma, a_s \in \algA, a_\gamma \vDash_{\Gamma\O} \gamma \land a_s \vDash_{S\O(\gamma)} s \implies a_m \cdot [a_\gamma, !_\pi a_s] \vDash_{T\O(\gamma, s)} f_m(\gamma, s)$$
-Now we have to construct an inhabitant $(f\O, f\R), $ of $\Pi^R \pi S T$. Focus only on the object part and let $f\O \define \lambda s \overset{\pi}{:} S. f_m(\gamma, s)$. Its realiser is $a_f$ must satisfy
+To verify it is sound, suppose we are given a function $t_M : \forall (\gamma , s) \in |\Gamma. \pi S|\O. T(\gamma, s)$ and its tracker $a_M \in \algA$. Unwinding the latter, we get :
+$$\forall \gamma \in |\Gamma\O|, s \in |S\O(\gamma)|, a_\gamma, a_s \in \algA, a_\gamma \vDash_{\Gamma\O} \gamma \land a_s \vDash_{S\O(\gamma)} s \implies a_M \cdot [a_\gamma, !_\pi a_s] \vDash_{T\O(\gamma, s)} t_m(\gamma, s)$$
+Focus only on the object part and fix some $\gamma \in |\Gamma\O|$. Now we have to construct an inhabitant $(f\O^\gamma, f\R^\gamma) $ of $|\Pi^R \pi S T\O(\gamma)|$. Again forgetting the relational part, let $f\O^\gamma \define \lambda s \overset{\pi}{:} S. t_m(\gamma, s)$. Its realiser is $a_f$ must satisfy
 
-$$ \forall s \in |S\O(\gamma)|, a_s \in \algA . a_s \vDash_{S\O(\gamma)} s \implies a_f \cdot !_\pi a_s \vDash_{T(\gamma, s)} f_m(\gamma, s) $$
+$$ \forall s \in |S\O(\gamma)|, a_s \in \algA . a_s \vDash_{S\O(\gamma)} s \implies a_f \cdot !_\pi a_s \vDash_{T(\gamma, s)} t_m(\gamma, s) $$
 
-A plausible solution is $a_f \define \lambda^* x. a_m \cdot [a_\gamma, a_s]$. Observe that in order $a_f$ to be well-defined, $a_\gamma$ must always exist. This is guaranteed by the application of $\mathbf{R}$ to the context $\Gamma$ in the conclusion.\\
+A plausible solution is $a_f \define \lambda^* x. a_M \cdot [a_\gamma, x]$. Observe that in order $a_f$ to be well-defined, $a_\gamma$ must always exist. This is guaranteed by the application of $\mathbf{R}$ to the context $\Gamma$ in the conclusion. 
 
-Finally, we also have an altered application rule as well:\\
-\infer[\text{App}]{\Gamma_1 + \pi\Gamma_2 \vdash App_{(\Pi^R\pi S T)}(M,N) \overset{\sigma}:T[N/x]}{
-  \Gamma_2 \vdash N \overset{\sigma'}: S
-  &
-  \deduce{0\Gamma_1 = 0\Gamma_2}{
-    \Gamma_1 \vdash M \overset{\sigma}: \Pi^R \pi S T
+Finally, we can construct  a term of $\Pi^R$ type - namely let $t_\lambda \define \lambda \gamma : |\mathbf{R}(\Gamma)|\O. f\O^\gamma$ with tracker $\lambda^*y\, x.a_m[y, x]$.
+
+As a last step, we also have a non-altered application rule as well:
+\begin{center}
+  \centering
+  \infer[\text{App}]{\Gamma_1 + \pi\Gamma_2 \vdash App_{(\Pi^R\pi S T)}(M,N) \overset{\sigma}:T[N/x]}{
+    \Gamma_2 \vdash N \overset{\sigma'}: S
+    &
+    \deduce{0\Gamma_1 = 0\Gamma_2}{
+      \Gamma_1 \vdash M \overset{\sigma}: \Pi^R \pi S T
+    }
+    &
+    \sigma'= 0 \iff (\pi = 0 \lor \sigma = 0)
   }
-  &
-  \sigma'= 0 \iff (\pi = 0 \lor \sigma = 0)
-}
+\end{center}
+For brevity, let's verify only the case of $\sigma = \sigma' = 1$. Let $\llbracket \Gamma_1 \rrbracket = (|\Gamma|, \vDash_1)$ and $\llbracket \Gamma_2 \rrbracket = (|\Gamma|, \vDash_2)$, 
+$(t_m, \_) : \forall \gamma \in |\Gamma\O|. (\Pi^R\pi S T)\O(\gamma)$, $t_n : \forall \gamma \in |\Gamma\O|. S\O(\gamma)$, $a_m$ is a tracker for $t_m$, $a_n$ - for $t_n$. Then we construct a function $t_{app} : \forall \gamma \in |\Gamma\O|.T[N/x]$, $t_{app} \define \lambda \gamma. t_m(\gamma)(t_n(\gamma))$ with a realiser $a_{app} \define \lambda^* x. \text{let } [a_1, a_2] = x \text{ in } a_m \cdot a_1 \cdot a_2$.
+
+\paragraph*{A subuniverse $U^R$}
+
+Although introducing $\Pi^R$ types was a step into right direction, we have not quite yet guaranteed bijection between elements of some \assembly and their realisers. To that end, we will semantically identify the types which enjoy that property (w.r.t their object part).
+
+\begin{claim}
+  $U^R$ is closed under $\Pi^R$ types.
+\end{claim}
+
 
 \subsection{Some (free) theorems}
 %\begin{thm}
