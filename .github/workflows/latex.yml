@@ -9,10 +9,10 @@ jobs:
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
-          root_file: parametric.tex
+          root_file: w-types.tex
       - name: stash pdf
         run: |
-          mv parametric.pdf $HOME
+          mv w-types.pdf $HOME
       - name: checkout document_releases branch
         uses: actions/checkout@v2
         with:
@@ -21,8 +21,8 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          mv $HOME/parametric.pdf $(pwd) # bring it back 
-          git add parametric.pdf
+          mv $HOME/w-types.pdf $(pwd) # bring it back 
+          git add w-types.pdf
           git commit -m "updated document"
       - name:  push pdf
         uses: ad-m/github-push-action@v0.5.0

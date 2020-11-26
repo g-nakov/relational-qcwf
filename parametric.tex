@@ -1,12 +1,6 @@
 \documentclass[12pt,a4paper]{article}
 \input{preamble.tex}
 
-\def\definecat#1{\ea\gdef\csname c#1\endcsname{\ensuremath{\mathcal{#1}}\xspace}}
-\foreachLetter{1}{27}{\definecat}
-
-\def\definealg#1{\ea\gdef\csname alg#1\endcsname{\ensuremath{\mathscr{#1}}\xspace}}
-\foreachLetter{1}{27}{\definealg}
-
 \autodefs{\cCat\cSet\cRGph\cSet\cORGph\bT\bU\dM}
 
 \def\cAsm{\mathcal{A}\mathit{sm}^\dagger(\algA)}
@@ -462,18 +456,15 @@ The functor is defined on objects as:
 and extends naturally to $\cORGph(\cAsm)$ morphisms. It can be also endowed with comonadic structure by observing we have a canonical choice for the natural transformations $\mathbf{R}(X) \to X$ and $\mathbf{R}(X) \to \mathbf{R}(\mathbf{R}(X))$, namely the canonical injection and identity. Also observe that the functors $!_\pi$ commute with $\mathbf{R}$, particularly $!_0(\mathbf{R}(X))=\mathbf{R}(!_0(X))$.\\
 
 On the surface level, we have the usual type formation rule in the syntax:
-\begin{center}
-  \centering
+$$
   \infer[\text{reduced } \Pi]{0\Gamma \vdash \Pi^R \pi S T}{0\Gamma \vdash S & 0\Gamma, x \overset{0}{:} S \vdash T}
-\end{center}
+$$
 However, the abstraction rule differs from the standard $\Pi$-type. In general, given an unresourced term $M$, $\Gamma, x \overset{0}: S \vdash M \overset{0}: T$, one cannot find a corresponding $\lambda$ term, $\Gamma \vdash (\lambda x \overset{\pi}: S . M) \overset{0}{:} \Pi^R \pi S T$. That is to say, no bijection on the object level exists between $f_M : \forall (\gamma, s). T(\gamma, s)$ and $f_\lambda :\forall \gamma . (\Pi^R \pi S T)\O(\gamma)$ as the latter function carries some notion of realisability while the former does not.
 
 Such bijection exists in the $1$ fragment, though. Thus, there is the reduced abstraction rule:
-\begin{center}
-  \centering
-  \infer[\text{reduced Lam}]{\mathbf{R}(\Gamma) \vdash (\lambda x \overset{\pi}: S. T) \overset{1}: \Pi^R \pi S T}{\Gamma, x \overset{\pi}{:} S \vdash M \overset{1}:T}
-\end{center}
-
+$$
+ \infer[\text{reduced Lam}]{\mathbf{R}(\Gamma) \vdash (\lambda x \overset{\pi}: S. T) \overset{1}: \Pi^R \pi S T}{\Gamma, x \overset{\pi}{:} S \vdash M \overset{1}:T}
+$$
 
 To verify it is sound, suppose we are given a function $t_M : \forall (\gamma , s) \in |\Gamma. \pi S|\O. T(\gamma, s)$ and its tracker $a_M \in \algA$. Unwinding the latter, we get :
 $$\forall \gamma \in |\Gamma\O|, s \in |S\O(\gamma)|, a_\gamma, a_s \in \algA, a_\gamma \vDash_{\Gamma\O} \gamma \land a_s \vDash_{S\O(\gamma)} s \implies a_M \cdot [a_\gamma, !_\pi a_s] \vDash_{T\O(\gamma, s)} t_m(\gamma, s)$$
@@ -486,18 +477,16 @@ A plausible solution is $a_f \define \lambda^* x. a_M \cdot [a_\gamma, x]$. Obse
 Finally, we can construct  a term of $\Pi^R$ type - namely let $t_\lambda \define \lambda \gamma : |\mathbf{R}(\Gamma)|\O. f\O^\gamma$ with tracker $\lambda^*y\, x.a_m[y, x]$.
 
 As a last step, we also have a non-altered application rule as well:
-\begin{center}
-  \centering
-  \infer[\text{App}]{\Gamma_1 + \pi\Gamma_2 \vdash App_{(\Pi^R\pi S T)}(M,N) \overset{\sigma}:T[N/x]}{
+$$
+\infer[\text{App}]{\Gamma_1 + \pi\Gamma_2 \vdash App_{(\Pi^R\pi S T)}(M,N) \overset{\sigma}:T[N/x]}{
     \Gamma_2 \vdash N \overset{\sigma'}: S
-    &
+    & \kern 3em
     \deduce{0\Gamma_1 = 0\Gamma_2}{
       \Gamma_1 \vdash M \overset{\sigma}: \Pi^R \pi S T
-    }
+    } \kern 1em
     &
     \sigma'= 0 \iff (\pi = 0 \lor \sigma = 0)
-  }
-\end{center}
+}$$
 For brevity, let's verify only the case of $\sigma = \sigma' = 1$. Let $\llbracket \Gamma_1 \rrbracket = (|\Gamma|, \vDash_1)$ and $\llbracket \Gamma_2 \rrbracket = (|\Gamma|, \vDash_2)$, 
 $(t_m, \_) : \forall \gamma \in |\Gamma\O|. (\Pi^R\pi S T)\O(\gamma)$, $t_n : \forall \gamma \in |\Gamma\O|. S\O(\gamma)$, $a_m$ is a tracker for $t_m$, $a_n$ - for $t_n$. Then we construct a function $t_{app} : \forall \gamma \in |\Gamma\O|.T[N/x]$, $t_{app} \define \lambda \gamma. t_m(\gamma)(t_n(\gamma))$ with a realiser $a_{app} \define \lambda^* x. \text{let } [a_1, a_2] = x \text{ in } a_m \cdot a_1 \cdot a_2$.
 
@@ -505,7 +494,7 @@ $(t_m, \_) : \forall \gamma \in |\Gamma\O|. (\Pi^R\pi S T)\O(\gamma)$, $t_n : \f
 
 Although introducing $\Pi^R$ types was a step into right direction, we have not quite yet guaranteed bijection between elements of some \assembly and their realisers. To that end, we will semantically identify the types which enjoy that property (w.r.t their object part).
 
-\begin{definition}[Comodest set/Distinct realisers ?]
+\begin{definition}[Comodest set/Distinct realisers?]
   Let $A$ be an \assembly.  $A$ has distinct realisers if for every $x, y$ in $|A|$, $a \in \algA$, the following holds 
 $$a \vDash_A x \land a \vDash_A y \implies x = y $$
 \end{definition}
@@ -515,7 +504,12 @@ A much weaker property  is:
 \begin{definition}[No universal realiser]
     Let $A$ be an \assembly.  $A$ has no universar realiser if for every $a \in \algA$, there is some $x \in \lfloor A \rfloor$, s.t.\ $a \not\vDash_A x$. 
 \end{definition}
-Accordingly, a family of \asmrgs $S$ over reflixe graph $\Gamma$ has no universal realiser if for every $\gamma \in \Gamma\O$, $S\O(\gamma)$ has no universal realiser.
+Accordingly, a family of \asmrgs $S$ over reflixe graph $\Gamma$ has no universal realiser if for every $\gamma \in \Gamma\O$, $S\O(\gamma)$ has no universal realiser.\\
+
+Recall the definition of the universe of small types $U$ and in particular its object component $U\O$ - the set of all small, discrete \asmrgs. We now impose some new restrictations
+\begin{definition}[A subuniverse $U^R$]
+  
+\end{definition}
 
 \begin{claim}
   $U^R$ is closed under $\Pi^R$ types.
@@ -585,13 +579,59 @@ As for $h\O(\gamma_o)$, we must first ensure that $h\O$ outputs well-defined inh
 Let $b^* \in \lfloor B\O(\gamma_o) \rfloor$, by def. we have that $ (g\O \comp h\O)(\gamma_o, b^*) = b^*$. As for the converse direction, let $(h\O \comp  g\O)(\gamma_o)(f\O, f\R)=(f'\O, f'\R)$ for some $(f\O, f\R) \in V\O(\gamma_o)$. By (1), we show only that $f\O = f'\O$. As $f\O$ is a constant function by (2), expand the definition of $h_o$ to obtain immediately $f\o = f'\O$.
 
 \newpage
-%$|\Pi^R \pi S T|(\gamma) = \{f : S \to T\ | \exists a_f .\; a \vDash_{S(\gamma)} x \implies a_f  \cdot !_\pi a \vDash_{T(\gamma, x)} f(x) \}$
-%
-%$a \vDash_{\Pi^R \pi S T(\gamma)}  f = \exists a_f .\; a \vDash_{S(\gamma)} x \implies a_f  \cdot !_\pi a \vDash_{T(\gamma, x)} f(x)$
+\paragraph*{(Non-dependent) resourced W-types\\} A brief sketch on how to add resourced $W$-types to QTT. Recall that ordinary $W$-type in MLT is an inductive type whose terms can be viewed as well-founded trees. This interpretation provide suitable grounds to reason about well-orderings in a constructive manner. Alternatively, we can think of $W$-type as the free term algebra on a single-sorted signature.
 
-\begin{center}
+We start with the benign rules of formation and introduction:
+$$
+\infer[\text{Form}]{0\Gamma \vdash W\pi A B}{
+  0\Gamma \vdash A  
+  &
+  0\Gamma, a \overset{0}: A \vdash B 
+}
+$$
 
-\end{center}
+$$
+\infer[\text{Intro}]{\pi \Gamma_1 + \Gamma_2 \vdash \mathbf{sup}_{A,B} a f \of{\sigma} W\pi A B}{
+  \Gamma_1 \vdash a \of\sigma A  
+  &
+  \Gamma_2 \vdash f \of{\sigma}  \Pi \sigma (B a) (W \pi A B)
+  & 
+  0 \Gamma_1 = 0 \Gamma_2
+  &
+  \sigma = 0 \Leftrightarrow \pi = 0
+}
+$$
+
+Let's look at Trees. $A \define 1 + X$, $B(inl \_) \define 0$, $B(inr \_) = 1 + 1$
+
+$$\Gamma , a \of\pi A \vdash inl(a) \of{\sigma} A^{\pi}+ B$$
+
+$$ \Gamma , N \of\sigma{A^\pi + B^\tau} , \Pi \pi A C, \Pi \tau B C \vdash Elim(N) \of\sigma C$$
+
+$$ \Gamma \vdash N \of\sigma A + B, \quad 0\Gamma, \_ \of{0} A+B \vdash C$$
+$$ \Gamma_L \vdash l \of\sigma \Pi \pi A C \quad \Gamma_R \vdash r \of\sigma \Pi \tau B C$$
+$$ (\rho) \Gamma + \tau \Gamma_L + \pi \Gamma_R \vdash elim_{A + B }(N) \of\sigma C \quad \rho = \tau * \pi \iff (\tau \neq 0 \land \pi \neq 0) $$  
+
+$$ \Pi \pi A + B . X \cong (\Pi ? A . X) \times (\Pi ? B . X)$$
+
+An inhabitant of the type $W \pi A B$ is a w.f.\ tree, s.t.\ a node is labelled by $\pi$-many copies of $a : A$ and have $B\, a$-many subtrees.
+
+$$
+\infer[\text{Elim}]{\Gamma_1 + \Gamma_2 \vdash (W(\pi - \tau)A B + 1) * \mathbf{elim}^{W\pi AB}_{C, c}(N)  \of{\sigma}  C[N/z]}{
+  \deduce{\Gamma_1, a \textcolor{red}{\of\tau} A, f \textcolor{red}{\of\omega} \Pi \textcolor{red}\omega (B a) (W\pi A B) \vdash c \of{\sigma} (\_ \textcolor{red}{\of{\omega}} \Pi \textcolor{red}{\omega} (B a)(C (f b))) \to C(\mathbf{sup}_{A,B} a f)}{
+    \deduce{} {
+    0\Gamma_1, z \overset{0} :\textcolor{red}{\forall \pi.} W \pi A B \vdash C 
+    &
+    \Gamma_2 \vdash N \overset{\sigma}: W \pi A B  }}}
+$$
+
+%$$
+%\infer[\text{Conv}]{\Gamma \vdash \mathbf{elim}^{W\pi A B}_{C,c}(\mathbf{sup}_{A,B} a f) = c (\lambda b \overset{\pi} : Ba . \mathbf{elim}^{W\pi A B}_{C,c}(f b)) \overset{\sigma}: C[\mathbf{sup}_{A,B} a f / z]}{
+%  \Gamma \vdash a \overset{\sigma} : A  
+%  &
+%  \Gamma \vdash f \overset{\sigma} : (\_ \overset{\pi} : B a ) \to  W \pi A B 
+%}
+%$$
 
 %\footnote{In Tarski's fashion we make distinction between types and terms by introducing a type U for codes of types and explicit decoder T}
 \printbibliography

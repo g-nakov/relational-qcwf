@@ -123,8 +123,8 @@ citestyle=numeric, giveninits=true]{biblatex}
 \let\comp\circ
 
 \def\pow{\mathcal{P}}
+\def\nat{\mathbb{N}}
 \newcommand{\carr}[1]{\ensuremath{|#1|}}
-
 \newcommand{\ob}[1]{\ensuremath{Ob(#1)}}
 
 \renewcommand{\phi}{\varphi}
@@ -133,9 +133,16 @@ citestyle=numeric, giveninits=true]{biblatex}
 \setlength{\parindent}{0pt}
 
 \newcommand{\terminal}[1]{\mathbf{1_{#1}}}
+\newcommand{\of}[1]{\overset{#1}{:}}
 
+\def\definecat#1{\ea\gdef\csname c#1\endcsname{\ensuremath{\mathcal{#1}}\xspace}}
+\foreachLetter{1}{27}{\definecat}
+
+\def\definealg#1{\ea\gdef\csname alg#1\endcsname{\ensuremath{\mathscr{#1}}\xspace}}
+\foreachLetter{1}{27}{\definealg}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Comments %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\FNF}[1]{\textcolor{blue}{\textbf{FNF:} #1}}
 \newcommand{\GN}[1]{\textcolor{magenta}{\textbf{GN:} #1}}
+\newcommand{\comment}[1]{\textcolor{gray}{\textit{#1}}}
