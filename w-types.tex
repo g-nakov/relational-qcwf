@@ -1,90 +1,218 @@
 \documentclass[12pt,a4paper]{article}
 \input{preamble.tex}
 
-\autodefs{\bR}
+\autodefs{\bR\binl\binr\bcase}
 \title{\vspace{-5em}Outline}
 \date{\vspace{-3em}}
 
 \begin{document}
 \maketitle
 
-Given a resource semiring $\bR$ with elements $s , t , u , \dots \in R$, define the following equivalence relation on the set $R^T \define \{0_\bR\} \cup \mu X. (R\setminus\{0_\bR\})  + X \times X$:
-\begin{gather*}
-  \tau \sim \rho \iff 
-  \begin{cases}
-     \tau = s,\ \rho = t \text{ and } s =_R t \\
-     \tau = s,\ \rho = (\rho, \rho'') \text{ and } \tau \sim \rho' \text{ and } \tau \sim \rho''\\
-     \tau = (\tau', \tau''),\ \rho = t \text{ and } \tau' \sim \rho \text { and } \tau'' \sim \rho \\
-     \tau = (\tau', \tau''),\ \rho = (\rho', \rho'') \text{ and } \tau' \sim \rho' \text { and } \tau'' \sim \rho''      
-  \end{cases}
-\end{gather*}
-\begin{claim}
-  $R^T/\sim$ can be endowed with usage semiring structure.
-\end{claim}
-Adjust the $R-LCA$ to account for the tree structure by augmenting the operation $!_\tau : \algA \to \algA$ and the elements $W_{\pi\rho}$, $F_\rho$, $\delta_{\pi\rho}$:
-\begin{gather*}
-  !^T_\tau x \define 
-  \begin{cases}
-   [\ulcorner true \urcorner, !_s x]  &\text{ if } s = contract(\tau) \\
-   [\ulcorner false \urcorner , E(!^T_{\tau'} x , !^T_{\tau''} x)],  &\text{ if } \langle\tau', \tau''\rangle = contract(\tau)\label{1}
-  \end{cases}
-\end{gather*}
-The outermost pairing with Bool allows us to inspect/ the shape of the resource annotation internally within the BCI algebra.
+%Given a resource semiring $\bR$ with elements $s , t , u , \dots \in R$, define the following equivalence relation on the set $R^T \define \{0_\bR\} \cup \mu X. (R\setminus\{0_\bR\})  + X \times X$:
+%\begin{gather*}
+%  \tau \sim \rho \iff 
+%  \begin{cases}
+%     \tau = s,\ \rho = t \text{ and } s =_R t \\
+%     \tau = s,\ \rho = (\rho, \rho'') \text{ and } \tau \sim \rho' \text{ and } \tau \sim \rho''\\
+%     \tau = (\tau', \tau''),\ \rho = t \text{ and } \tau' \sim \rho \text { and } \tau'' \sim \rho \\
+%     \tau = (\tau', \tau''),\ \rho = (\rho', \rho'') \text{ and } \tau' \sim \rho' \text { and } \tau'' \sim \rho''      
+%  \end{cases}
+%\end{gather*}
+%\begin{claim}
+%  $R^T/\sim$ can be endowed with usage semiring structure.
+%\end{claim}
+%Adjust the $R-LCA$ to account for the tree structure by augmenting the operation $!_\tau : \algA \to \algA$ and the elements $W_{\pi\rho}$, $F_\rho$, $\delta_{\pi\rho}$:
+%\begin{gather*}
+%  !^T_\tau x \define 
+%  \begin{cases}
+%   [\ulcorner true \urcorner, E(!_s x, !_s x)]  &\text{ if } s = contract(\tau) \\
+%   [\ulcorner false \urcorner , E(!^T_{\tau'} x , !^T_{\tau''} x)],  &\text{ if } \langle\tau', \tau''\rangle = contract(\tau)\label{1}
+%  \end{cases}
+%\end{gather*}
+%
+%
+%The outermost pairing with Bool allows us to inspect/ the shape of the resource annotation internally within the BCI algebra.
+%
+%Futhermore, it is also possible to define $W_{\pi\rho}$, $F_\rho$, $\delta_{\pi\rho}$, but that involves quite a few subtleties.\\
+%
+%As an example usage of tree resource annotation, let's define the semantics of $\oplus$-types and check the rules are sound wrt. to it.\\
+%$\llbracket (A \oplus B)(\gamma)\rrbracket \define (|A(y)| \sqcup |B(y)|, \vDash_{A\oplus B(\gamma)} )$ , where \\
+%
+%$ a \vDash_{A \oplus B(\gamma)} (i , x)$ iff 
+%$\begin{aligned}
+%  &(\exists\, a_x \in \algA. a = [\ulcorner true \urcorner, a_x] \land a_x \vDash_{A(\gamma)} x \land \ulcorner true \urcorner \vDash_{Bool(\gamma)} i)\ \lor \\
+%  & (\exists\, b_x \in \algA. a = [\ulcorner false \urcorner, b_x] \land b_x \vDash_{B(\gamma)} x \land \ulcorner false \urcorner \vDash_{Bool(\gamma)} i) 
+%\end{aligned}$
 
-Futhermore, it is also possible to define $W_{\pi\rho}$, $F_\rho$, $\delta_{\pi\rho}$, but that involves quite a few subtleties.\\
-
-As an example usage of tree resource annotation, let's define the semantics of $\oplus$-types and check the rules are sound wrt. to it.\\
-$\llbracket (A \oplus B)(\gamma)\rrbracket \define (|A(y)| \sqcup |B(y)|, \vDash_{A\oplus B(\gamma)} )$ , where \\
-
-$ a \vDash_{A \oplus B(\gamma)} (i , x)$ iff 
-$\begin{aligned}
-  &(\exists\, a_x \in \algA. a = [\ulcorner true \urcorner, a_x] \land a_x \vDash_{A(\gamma)} x \land \ulcorner true \urcorner \vDash_{Bool(\gamma)} i)\ \lor \\
-  & (\exists\, b_x \in \algA. a = [\ulcorner false \urcorner, b_x] \land b_x \vDash_{B(\gamma)} x \land \ulcorner false \urcorner \vDash_{Bool(\gamma)} i) 
-\end{aligned}$
+%\begin{figure}[!h]
+%\begin{align*}
+%  \infer[\oplus\text{-type}]{0\Gamma \vdash A \oplus B}{
+%    0\Gamma \vdash A &
+%    0\Gamma \vdash B} & & 
+%  \infer[\text{inl}]{\Gamma \vdash \mathbf{inl}\, M \of \sigma A \oplus B}{
+%      \Gamma \vdash M \of{\sigma} A} & &
+%    \infer[\text{inr}]{\Gamma \vdash \mathbf{inr}\, N \of \sigma A \oplus B}{
+%      \Gamma \vdash N \of{\sigma} B
+%    }
+%  \end{align*}
+%  \begin{gather*}
+%  0\Gamma, x \of{0} A \oplus B \vdash C \\
+%  \infer[\oplus \text{-elim}]{\Gamma' + \langle\rho, \pi\rangle \Gamma \vdash \mathbf{case}(M, T_a, T_b) \of{\sigma} C[M / x]}{
+%    \Gamma \vdash M \of \sigma A \oplus B &&
+%    \Gamma', a \of {\rho} A \vdash T_a \of{\sigma} C[\mathbf{inl}\,a/x] && 
+%    \Gamma', b \of{\pi} B \vdash T_b \of{\sigma} C[\mathbf{inr}\, b/x] &&
+%    0\Gamma = 0\Gamma'
+%  }
+%  \end{gather*}
+%  \begin{gather*}
+%    0\Gamma, x \of{0} A \oplus B \vdash C \\
+%    \infer[\oplus \text{-comp}]{\Gamma' + \langle\rho, \pi\rangle (a' \of{1} A)\vdash  \mathbf{case}(\mathbf{inl}(a'), T_a, T_b) = T_a[a'/a]}{
+%      a' \of{\tau} A,  a \of {\rho} A \vdash T_a \of{\sigma} C[\mathbf{inl}\,a/x] && 
+%      \Gamma', b \of{\pi} B \vdash T_b \of{\sigma} C[\mathbf{inr}\, b/x] &&
+%      0\Gamma = 0\Gamma'
+%    }
+%  \end{gather*}
+%\caption{Rules for $\oplus$-types}
+%\end{figure}
+%\newpage
 
 \begin{figure}[h]
-\begin{align*}
-  \infer[\oplus\text{-type}]{0\Gamma \vdash A \oplus B}{
-    0\Gamma \vdash A &
-    0\Gamma \vdash B} & & 
-  \infer[\text{inl}]{\Gamma \vdash \mathbf{inl}\, M \of \sigma A \oplus B}{
-      \Gamma \vdash M \of{\sigma} A} & &
-    \infer[\text{inr}]{\Gamma \vdash \mathbf{inr}\, N \of \sigma A \oplus B}{
-      \Gamma \vdash N \of{\sigma} B
+\begin{gather*}
+  \begin{align*}
+    \infer[\oplus\text{-type}]{0\Gamma \vdash \rho A \oplus \pi B}{
+      0\Gamma \vdash A &
+      0\Gamma \vdash B} & & 
+    \infer[\text{inl}]{\rho \Gamma \ \vdash \mathbf{inl}\, S_1 \of \sigma \rho A \oplus \pi B}{
+      \Gamma \vdash S_1 \of{\sigma} A} & &
+    \infer[\text{inr}]{\pi\Gamma \vdash \mathbf{inr}\, S_2 \of \sigma \rho A \oplus \pi B}{
+      \Gamma \vdash S_2 \of{\sigma} B
     }
-  \end{align*}
-  \begin{gather*}
-  0\Gamma, x \of{0} A \oplus B \vdash C \\
-  \infer[\oplus \text{-elim}]{\Gamma' + \langle\rho, \pi\rangle\Gamma \vdash \mathbf{case}(M, T_a, T_b) \of{\sigma} C[M / x]}{
-    \Gamma \vdash M \of \sigma A \oplus B &&
-    \Gamma', a \of {\rho} A \vdash T_a \of{\sigma} C[\mathbf{inl}\,a/x] && 
-    \Gamma', b \of{\pi} B \vdash T_b \of{\sigma} C[\mathbf{inr}\, b/x] &&
-    0\Gamma = 0\Gamma'
-  }
-  \end{gather*}
-\caption{Rules for $\oplus$-types}
+  \end{align*}\\
+  \\
+  0\Gamma, x \of{0} \rho A \oplus \pi B \vdash C \\
+  \infer[\oplus \text{-elim}]{\Gamma' + \Gamma \vdash \bcase(M , T_1 , T_2)\of{ \sigma}C[M/x]}{
+    \Gamma \vdash M \of{\sigma} \rho A \oplus \pi B &&
+    \Gamma', a \of {\rho} A \vdash T_1 \of{\sigma} C[\mathbf{inl}\, a/x] && 
+    \Gamma', b \of{\pi} B \vdash T_2 \of{\sigma} C[\mathbf{inr}\, b/x] &&
+    0\Gamma = 0\Gamma'    
+  }\\
+  \\
+  \infer[\oplus \text{-comp}]{\Gamma' + \rho\Gamma \vdash \bcase(\binl(S_1), T_1, T_2) \equiv T_1[S_1 / a]}{
+    \Gamma \vdash S_1 \of{\sigma} A &&
+    \Gamma \vdash M \of{\sigma} \rho A \oplus \pi B &&
+    \Gamma', a \of {\rho} A \vdash T_1 \of{\sigma} C[\mathbf{inl}\, a/x] && 
+    0\Gamma = 0\Gamma'    
+  }\\
+\end{gather*}
+\caption{Rules for $\oplus$-type}
 \end{figure}
-WLOG, let's verify the soundness of $\mathbf{inl}$ and $\mathbf{case}$.\\
-Given a realiser $a_M$ for $\forall \gamma \in |\Gamma|. M(\gamma)$, let $a_{\mathbf{inl}} \define \lambda^* a_\gamma. [\ulcorner true \urcorner, a_M \cdot a_\gamma]$
-\newpage
-Given realisers $a_M$, $a_T$ and $b_T$, s.t:\\
-$\forall \gamma \in |\Gamma|, a_\gamma \in \algA. a_\gamma \vDash_{\Gamma} y \implies a_M \cdot a_y \vDash_{A \oplus B (\gamma)} M(\gamma)$,\\
-$\forall \gamma' \in |\Gamma'|, s \in |A(\gamma')|,  a'_\gamma \in \algA, a_s \in \algA. a'_\gamma \vDash_{\Gamma} \gamma' \land a_s \vDash_{A(\gamma)} s \implies a_T \cdot [a'_\gamma , !_\rho a_s] \vDash_{C(\gamma' , inl(s))} T_a(\gamma', s)$,\\
-$\forall \gamma' \in |\Gamma'|, t \in |B(\gamma')|,  a'_\gamma \in \algA, a_t \in \algA. a'_\gamma \vDash_{\Gamma} \gamma' \land a_t \vDash_{B(\gamma)} t \implies b_T \cdot [a'_\gamma , !_\pi a_t] \vDash_{C(\gamma' , inr(t))} T_b(\gamma', t)$,\\
-let $a_{case} \define
+We give the following semantics for the $\oplus$-type:\\
+$|\rho A \oplus \pi B\;(\gamma)| \define |A(\gamma)| \sqcup |B(\gamma)|$\\
+$\begin{aligned}
+  a \vDash_{\rho A \oplus \pi B\;(\gamma)} (i , x) \text{ iff } &(\exists b .  a =[!_\rho b, \ulcorner true \urcorner] \land b \vDash_{A(\gamma)} x \land i = 0)\; \lor \\
+  &(\exists c .  a =[!_\pi c, \ulcorner false \urcorner] \land c \vDash_{B(\gamma)} x \land i = 1)
+\end{aligned}$
+\begin{claim}
+  The rules are sound when interpreted wrt to the given semantics for $\oplus$-types and realisability model.
+\end{claim}
+\begin{proof}
+The underlying set-theoretic functions are immediate. For the realisers, let
+\begin{itemize}[noitemsep]
+  \item $a_\binl \define \lambda^* x . [ F_\rho \cdot\ !_\rho a_{s_1}\cdot x , \ulcorner true \urcorner]$\\
+  
+  \emph{if $a_{s_1}\cdot {a_\gamma} \vDash  s_1$, then $a_\binl \cdot !_\rho a_\gamma \vDash \binl s_1$; $a_\binl \cdot !_\rho a_\gamma \leadsto [!_\rho (a_{s_1} \cdot a_\gamma) , \ulcorner true \urcorner]$}\\
+  
+  \item $a_\bcase \define 
+  \begin{aligned}
+  \lambda^* x .\text{ let } & [a'_\gamma, a_\gamma] = x, \\
+   &[a , b] = a_m \cdot a_\gamma \text{ in }\\
+   & E(b, a_{T_1}, a_{T_2}) \cdot [ a'_\gamma , a]      
+  \end{aligned}$\\
+  \\
+  \emph{assuming $a_m \cdot a_\gamma \vDash M$,  $a_{T_1} \cdot [a'_\gamma, !_\rho a_a] \vDash T_1$, $a_{T_2} \cdot [a'_\gamma, !_\pi a_b] \vDash T_2$, then we want to find $a_\bcase$, s.t.\ $a_\bcase\cdot [a'_\gamma, a_\gamma] \vDash \bcase(M, T_1, T_2)$.\\ 
+  \subitem if $a_m \cdot a_\gamma = [!_\rho a_a , \ulcorner true \urcorner]$, then $a_\bcase \cdot [a_\gamma , a'_\gamma] \leadsto E(\ulcorner true \urcorner, a_{T_1}, a_{T_2})\cdot [a'_
+  \gamma, !_\rho a_a] \leadsto a_{T_1} \cdot [a'_\gamma, !_\rho a_a]$
+  \subitem if $a_m \cdot a_\gamma = [!_\pi a_b, \ulcorner false \urcorner]$, then $\dots$} 
+\end{itemize}
+\end{proof}
+
+\begin{claim}
+  There is a bijection:
+  $$RTm(\Gamma, \Pi (x \of{\tau} \rho A \oplus \pi B)\, C) \cong RTm(\Gamma, \Pi (y \of{\tau\rho}A)\, C[\binl y /x]) \times RTm(\Gamma, \Pi(z \of{\tau\pi} B)\, C[\binl z /x]))$$
+  \textit{(natural in $\Gamma$).}
+\end{claim}
+
+\begin{proof}
+Given a term $\Gamma \vdash f \of{1} (x \of \tau \rho A \oplus \pi B) \to C$, we can derive another term\\ $\Gamma \vdash f^l \of{1} ( y \of {\tau \rho} A) \to C[\binl y /x]$:
+$$
+\infer[Lam]{\Gamma \vdash \lambda y \of{\tau\rho} A .\, f (\binl y) : (y \of {\tau \rho} A) \to C[\binl y / x]}{
+  \infer[App]{\Gamma , y \of{\tau\rho} A \vdash f(\binl y) \of{1} C[\binl y /x] }{
+    \infer[Weak]{\Gamma , y \of{0} A \vdash f \of{1} (x \of\tau \rho A \oplus \pi B) \to C}{
+      \Gamma \vdash f : (x \of \tau \rho A \oplus \pi B) \to C
+    }
+    &
+    \infer[inl]{0\Gamma, y \of\rho A \vdash \binl y \of{1}\rho A \oplus \pi B}{
+      \infer[var]{0\Gamma, y \of{1} \vdash y \of{1} A}{
+       \vdash 0\Gamma, y \of{1} A
+      }
+    }
+  }
+}
+$$
+Analogously, we can obtain $\Gamma \vdash f^r \of{1} (z \of{\tau\pi} B) \to C[\binr y /x]$.\\
+Now suppose we have terms $\Gamma \vdash l \of{1} (y \of{\tau \rho} A) \to C[\binl y /x]$ and $\Gamma \vdash r \of{1} (z \of{\tau \pi} B) \to C[\binr z / x]$. Using the isomorphism $\Lambda^\mathcal{L}$, we get judgements $ \Gamma, y \of{\tau \rho} A \vdash l^* : C[\binl y / x]$ and\\ $\Gamma , z \of {\tau \pi} B \vdash r^* : C[\binr z /x]$.
+\end{proof}
+
+
+%$case(\mathbf{inl}(x), T_a, T_b) = T_a$
+%\\$\Gamma \define x \of{\rho} A$, $\Gamma' \define x \of{0} A$.
+%WLOG, let's verify the soundness of $\mathbf{inl}$ and $\mathbf{case}$.\\
+%Given a realiser $a_M$ for $\forall \gamma \in |\Gamma|. M(\gamma)$, let $a_{\mathbf{inl}} \define \lambda^* a_\gamma. [\ulcorner true \urcorner, a_M \cdot a_\gamma]$
+%Given realisers $a_M$, $a_T$ and $b_T$, s.t:\\
+%$\forall \gamma \in |\Gamma|, a_\gamma \in \algA. a_\gamma \vDash_{\Gamma} y \implies a_M \cdot a_y \vDash_{A \oplus B (\gamma)} M(\gamma)$,\\
+%$\forall \gamma' \in |\Gamma'|, s \in |A(\gamma')|,  a'_\gamma \in \algA, a_s \in \algA. a'_\gamma \vDash_{\Gamma} \gamma' \land a_s \vDash_{A(\gamma)} s \implies a_T \cdot [a'_\gamma , !_\rho a_s] \vDash_{C(\gamma' , inl(s))} T_a(\gamma', s)$,\\
+%$\forall \gamma' \in |\Gamma'|, t \in |B(\gamma')|,  a'_\gamma \in \algA, a_t \in \algA. a'_\gamma \vDash_{\Gamma} \gamma' \land a_t \vDash_{B(\gamma)} t \implies b_T \cdot [a'_\gamma , !_\pi a_t] \vDash_{C(\gamma' , inr(t))} T_b(\gamma', t)$,\\
+%let $a_{case} \define
+%%\begin{aligned}
+%% W_{1 \langle\rho , \pi \rangle} \cdot (\lambda^* & a'_{!\gamma}\ a_{!\gamma}.  &&\comment{-- unwrap $(1  + \langle \rho , \pi \rangle) \Gamma$}\\
+%% &\text{let }[inj, a_m] = a_M \text{ in } &&\comment{-- pattern match on $M$}\\
+%% &\text{let }[collapsed, a_r] = a_{!\gamma} \text{ in } &&\comment{-- check if $\langle \pi , \rho \rangle$ collapsed}\\
+%% &\text{let }[c_T, inj'] = E([a_T , \ulcorner true \urcorner], [b_T , \ulcorner false \urcorner]) \cdot inj \text{ in } &&\comment{--}\\
+%% &\comment{-- check the right realiser and rewrap a boolean value}&&\\
+%% &\comment{-- so the linearity of inj is not violated }&&\\
+%% & c_T \cdot [D\cdot a'_{!\gamma} ,  &&\\
+%% & \quad\quad E(\lambda^*r\, m. , \lambda^*r . , ) \cdot collapsed \cdot a_r \cdot a_m]
+%%\end{aligned}$
 %\begin{aligned}
-% W_{1 \langle\rho , \pi \rangle} \cdot (\lambda^* & a'_{!\gamma}\ a_{!\gamma}.  &&\comment{-- unwrap $(1  + \langle \rho , \pi \rangle) \Gamma$}\\
-% &\text{let }[inj, a_m] = a_M \text{ in } &&\comment{-- pattern match on $M$}\\
-% &\text{let }[collapsed, a_r] = a_{!\gamma} \text{ in } &&\comment{-- check if $\langle \pi , \rho \rangle$ collapsed}\\
-% &\text{let }[c_T, inj'] = E([a_T , \ulcorner true \urcorner], [b_T , \ulcorner false \urcorner]) \cdot inj \text{ in } &&\comment{--}\\
-% &\comment{-- check the right realiser and rewrap a boolean value}&&\\
-% &\comment{-- so the linearity of inj is not violated }&&\\
-% & c_T \cdot [D\cdot a'_{!\gamma} ,  &&\\
-% & \quad\quad E(\lambda^*r\, m. , \lambda^*r . , ) \cdot collapsed \cdot a_r \cdot a_m]
-%\end{aligned}$
-\begin{aligned}
-  W_{1 \langle\rho , \pi \rangle} \cdot (\lambda^* & a'_{!\gamma}\ a_{!\gamma}.  &&\comment{-- unwrap $(1  + \langle \rho , \pi \rangle) \Gamma$}\\
-  & \dots F_{\langle \pi , \rho \rangle} \cdot !_{\langle \pi , \rho \rangle}(\lambda^* r. a_M \cdot r ) . a_{!\gamma} \dots &&
-\end{aligned}$\\
-Problem : We end up with something of the shape $!_{\langle \pi , \rho \rangle}([\ulcorner boolean \urcorner,  x ])$ and want to select the projection depending on the inner boolean value.
+%  W_{1 \langle\rho , \pi \rangle} \cdot (\lambda^* & a'_{!\gamma}\ a_{!\gamma}.  &&\comment{-- unwrap $(1  + \langle \rho , \pi \rangle) \Gamma$}\\
+%  & \dots F_{\langle \pi , \rho \rangle} \cdot !_{\langle \pi , \rho \rangle}(\lambda^* r. a_M \cdot r ) . a_{!\gamma} \dots &&
+%\end{aligned}$\\
+%Problem : We end up with something of the shape $!_{\langle \pi , \rho \rangle}([\ulcorner boolean \urcorner,  x ])$ and want to select the projection depending on the inner boolean value.
+Now we can focus on the relational part 
+\begin{align*}
+  (\rho A \oplus \pi B)(\gamma)_R &\define A(\gamma)_R \sqcup B(\gamma)_R\\
+  (\rho A \oplus \pi B)(\gamma)_{refl} &\define A(\gamma)_{refl} \sqcup B(\gamma)_{refl}\\
+  (\rho A \oplus \pi B)(\gamma)_{\sigma} &\define A(\gamma)_{\sigma} \sqcup B(\gamma)_{\sigma}, \quad \sigma \in \{\text{src}, \text{tgt}\}
+\end{align*}
+Suppose $A,B$ are discrete. Then $\rho A \oplus \pi B$ is also discrete.
+(Since coproducts preserve isos).
+
+\section{Spellchecking}
+\section{Polynomial functors in a linear setting}
+\subsection{Category of closed types and linear functions} 
+\subsection{Internal representation}
+\subsection{External representation (using adjoints)}
+\subsection{Properties of quantative polynomial functors}
+
+\section{Algebras for quantative polynomial functors}
+
+\subsection{$\mathbb{N}$}
+\subsection{Lists}
+\subsection{Trees}
+
+\subsection{Induction principle}
+
+\section{Rules for W-types in QTT}
+\section{Generalising to non-empty contexts}
+\section{Parametricity and W-types}
 \end{document}
