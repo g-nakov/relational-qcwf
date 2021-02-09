@@ -1,7 +1,7 @@
 \documentclass[12pt,a4paper]{article}
 \input{preamble.tex}
 
-\autodefs{\bR\binl\binr\bcase}
+\autodefs{\bR\dN\binl\binr\bcase}
 \title{\vspace{-5em}Outline}
 \date{\vspace{-3em}}
 
@@ -76,35 +76,102 @@
 %\end{figure}
 %\newpage
 
-\begin{figure}[h]
-\begin{gather*}
-  \begin{align*}
-    \infer[\oplus\text{-type}]{0\Gamma \vdash \rho A \oplus \pi B}{
-      0\Gamma \vdash A &
-      0\Gamma \vdash B} & & 
-    \infer[\text{inl}]{\rho \Gamma \ \vdash \mathbf{inl}\, S_1 \of \sigma \rho A \oplus \pi B}{
-      \Gamma \vdash S_1 \of{\sigma} A} & &
-    \infer[\text{inr}]{\pi\Gamma \vdash \mathbf{inr}\, S_2 \of \sigma \rho A \oplus \pi B}{
-      \Gamma \vdash S_2 \of{\sigma} B
+\section{Quantitative polynomial functors}
+\subsection{Category of closed types and linear functions}
+Let $\cC$ be the category of closed types and linear functions $f : (x \of {1} X) \to Y $ for which derivations in QTT exist. Composition of morphisms $\Gamma \vdash f \of{\sigma} (x \of{1} X) \to Y$ and $\Gamma \vdash g \of{\sigma} (y \of{1} Y) \to Z$ is given by ordinary function composition $\Gamma \vdash \lambda x \of{1} X. g(f(x)) \of{\sigma} (x \of{1} X) \to Z $.
+
+The linearity restriction on the morphisms does not lead to loss of expressiveness - functions with arbitrary resource annotations can be represented as linear ones via:
+
+
+
+\subsection{Internal representation}
+Let $F$ be the polynomial functor mapping a type $X$ to $(a \of{1} A) \otimes (Ba \overset{1}\to X)$ and a function $f : X \overset{1}\to Y$ to $Ff : (a \of{1} A)\otimes(Ba \overset{1}{\to} X) \to (a \of{1} A)\otimes(Ba \overset{1}{\to } Y)$
+
+If $D_f$ is the derivation of $f$, we show how to derive $Ff$. Given some $a : A$ and $h : B a \overset{1}\to X$, start by composing with $f$ and constructing a tensor product:
+
+$$ 
+\infer{\Gamma, a \of{1} A, h \of{1} B a \overset{1}\to X \vdash (a, \lambda b \of{1} B a. f(g(b))) \of{1} (a \of{1} A)\otimes(B a \overset{1}\to Y)}{
+  \infer*{0\Gamma, a \of{1}, h \of{0} \dots \vdash a \of{1} A}{}
+  & 
+\infer*{\Gamma, a \of{0} A, h \of{1} B a \overset{1}\to X \vdash \lambda b \of{1} B a. f(g(b)) \of{1} (B a \overset{1}\to Y) }{
+  \infer[Var]{0\Gamma, a \of{0} A, h \of{1} B a \overset{1}\to X \vdash h \of{1} B a \overset{1} \to X}{
+      \vdash \Gamma, a \of{1} A, h \of{1} B a \overset{1}\to X
     }
-  \end{align*}\\
-  \\
-  0\Gamma, x \of{0} \rho A \oplus \pi B \vdash C \\
-  \infer[\oplus \text{-elim}]{\Gamma' + \Gamma \vdash \bcase(M , T_1 , T_2)\of{ \sigma}C[M/x]}{
-    \Gamma \vdash M \of{\sigma} \rho A \oplus \pi B &&
-    \Gamma', a \of {\rho} A \vdash T_1 \of{\sigma} C[\mathbf{inl}\, a/x] && 
-    \Gamma', b \of{\pi} B \vdash T_2 \of{\sigma} C[\mathbf{inr}\, b/x] &&
-    0\Gamma = 0\Gamma'    
-  }\\
-  \\
-  \infer[\oplus \text{-comp}]{\Gamma' + \rho\Gamma \vdash \bcase(\binl(S_1), T_1, T_2) \equiv T_1[S_1 / a]}{
-    \Gamma \vdash S_1 \of{\sigma} A &&
-    \Gamma \vdash M \of{\sigma} \rho A \oplus \pi B &&
-    \Gamma', a \of {\rho} A \vdash T_1 \of{\sigma} C[\mathbf{inl}\, a/x] && 
-    0\Gamma = 0\Gamma'    
-  }\\
-\end{gather*}
-\caption{Rules for $\oplus$-type}
+  & 
+  \infer{\Gamma \vdash f \of{1} X \overset{1}\to Y}{
+    D_f
+  }
+}
+}
+$$
+
+
+$$\infer[Lam]{\Gamma \vdash \lambda z \of {1} (a \of{1} A) \otimes (B a \to X). \text{ let } \dots \of{1} (a \of{1} A) \otimes (B a \overset{1} \to X) \overset{1}\longrightarrow (a \of{1} A) \otimes (B a \overset{1} \to Y)} {
+  \infer[\oplus-E]{\Gamma,  z \of{1}  (a \of{1} A) \otimes(B a \overset{1}\to X) \vdash \text{let } (x,u) = a \text{ in } (x , \lambda b \of{1} Ba. f(u(b))) \of{1} (a \of{1} A)\otimes(B a \overset{1}\to Y)   }{
+    \infer{0\Gamma, z \of{1} (a \of{1} A) \otimes (B a \overset{1}\to X) \vdash  z \of{1} \dots} {
+      \vdash \Gamma, z \of{1} (a \of{1} A) \otimes (B a \overset{1}\to X)
+    }
+    &
+    \Gamma, \dots \vdash (a, \lambda b \of{1} B a. f(g(b))) \of{1} (a \of{1} A)\otimes(B a \overset{1}\to Y)
+  }
+}
+$$
+
+\subsection{External representation (using adjoints)}
+$(s \of{0} S) \otimes ((t \of{0} T) \otimes Id_{f(s) ,g(t) })) $
+Use QCwF structure... 
+\subsection{Generalising to non-empty contexts}
+\subsection{Properties of quantitative polynomial functors}
+
+\section{Algebras for QPFs}
+
+\subsection{$\dN$}
+$f : 1 \to Bool$, Let $A \define Bool$ and $B = \mathbf{1}$, $P_f$. 
+
+$P_f(X) \define (a \of{1} Bool)\otimes((b \in f^{-1}(a)) \to X)$
+Assume $N$, prove initiality.
+
+If there is an initial algebra for $P_f$ there is a type $N$ that satisfies n.n. induction (requires dependent function).
+\subsection{Lists}
+\subsection{Trees}
+
+\subsection{Induction principle}
+
+\section{Rules for W-types in QTT}
+\section{Parametricity and W-types}
+
+\newpage
+\section{Appendix}
+\subsection{(Stand-alone) Sum types}
+\begin{figure}[h]
+  \begin{gather*}
+    \begin{align*}
+      \infer[\oplus\text{-type}]{0\Gamma \vdash \rho A \oplus \pi B}{
+        0\Gamma \vdash A &
+        0\Gamma \vdash B} & & 
+      \infer[\text{inl}]{\rho \Gamma \ \vdash \mathbf{inl}\, S_1 \of \sigma \rho A \oplus \pi B}{
+        \Gamma \vdash S_1 \of{\sigma} A} & &
+      \infer[\text{inr}]{\pi\Gamma \vdash \mathbf{inr}\, S_2 \of \sigma \rho A \oplus \pi B}{
+        \Gamma \vdash S_2 \of{\sigma} B
+      }
+    \end{align*}\\
+    \\
+    0\Gamma, x \of{0} \rho A \oplus \pi B \vdash C \\
+    \infer[\oplus \text{-elim}]{\Gamma' + \Gamma \vdash \bcase(M , T_1 , T_2)\of{ \sigma}C[M/x]}{
+      \Gamma \vdash M \of{\sigma} \rho A \oplus \pi B &&
+      \Gamma', a \of {\rho} A \vdash T_1 \of{\sigma} C[\mathbf{inl}\, a/x] && 
+      \Gamma', b \of{\pi} B \vdash T_2 \of{\sigma} C[\mathbf{inr}\, b/x] &&
+      0\Gamma = 0\Gamma'    
+    }\\
+    \\
+    \infer[\oplus \text{-comp}]{\Gamma' + \rho\Gamma \vdash \bcase(\binl(S_1), T_1, T_2) \equiv T_1[S_1 / a]}{
+      \Gamma \vdash S_1 \of{\sigma} A &&
+      \Gamma \vdash M \of{\sigma} \rho A \oplus \pi B &&
+      \Gamma', a \of {\rho} A \vdash T_1 \of{\sigma} C[\mathbf{inl}\, a/x] && 
+      0\Gamma = 0\Gamma'    
+    }\\
+  \end{gather*}
+  \caption{Rules for $\oplus$-type}
 \end{figure}
 We give the following semantics for the $\oplus$-type:\\
 $|\rho A \oplus \pi B\;(\gamma)| \define |A(\gamma)| \sqcup |B(\gamma)|$\\
@@ -116,24 +183,24 @@ $\begin{aligned}
   The rules are sound when interpreted wrt to the given semantics for $\oplus$-types and realisability model.
 \end{claim}
 \begin{proof}
-The underlying set-theoretic functions are immediate. For the realisers, let
-\begin{itemize}[noitemsep]
-  \item $a_\binl \define \lambda^* x . [ F_\rho \cdot\ !_\rho a_{s_1}\cdot x , \ulcorner true \urcorner]$\\
-  
-  \emph{if $a_{s_1}\cdot {a_\gamma} \vDash  s_1$, then $a_\binl \cdot !_\rho a_\gamma \vDash \binl s_1$; $a_\binl \cdot !_\rho a_\gamma \leadsto [!_\rho (a_{s_1} \cdot a_\gamma) , \ulcorner true \urcorner]$}\\
-  
-  \item $a_\bcase \define 
-  \begin{aligned}
-  \lambda^* x .\text{ let } & [a'_\gamma, a_\gamma] = x, \\
-   &[a , b] = a_m \cdot a_\gamma \text{ in }\\
-   & E(b, a_{T_1}, a_{T_2}) \cdot [ a'_\gamma , a]      
-  \end{aligned}$\\
-  \\
-  \emph{assuming $a_m \cdot a_\gamma \vDash M$,  $a_{T_1} \cdot [a'_\gamma, !_\rho a_a] \vDash T_1$, $a_{T_2} \cdot [a'_\gamma, !_\pi a_b] \vDash T_2$, then we want to find $a_\bcase$, s.t.\ $a_\bcase\cdot [a'_\gamma, a_\gamma] \vDash \bcase(M, T_1, T_2)$.\\ 
-  \subitem if $a_m \cdot a_\gamma = [!_\rho a_a , \ulcorner true \urcorner]$, then $a_\bcase \cdot [a_\gamma , a'_\gamma] \leadsto E(\ulcorner true \urcorner, a_{T_1}, a_{T_2})\cdot [a'_
-  \gamma, !_\rho a_a] \leadsto a_{T_1} \cdot [a'_\gamma, !_\rho a_a]$
-  \subitem if $a_m \cdot a_\gamma = [!_\pi a_b, \ulcorner false \urcorner]$, then $\dots$} 
-\end{itemize}
+  The underlying set-theoretic functions are immediate. For the realisers, let
+  \begin{itemize}[noitemsep]
+    \item $a_\binl \define \lambda^* x . [ F_\rho \cdot\ !_\rho a_{s_1}\cdot x , \ulcorner true \urcorner]$\\
+    
+    \emph{if $a_{s_1}\cdot {a_\gamma} \vDash  s_1$, then $a_\binl \cdot !_\rho a_\gamma \vDash \binl s_1$; $a_\binl \cdot !_\rho a_\gamma \leadsto [!_\rho (a_{s_1} \cdot a_\gamma) , \ulcorner true \urcorner]$}\\
+    
+    \item $a_\bcase \define 
+    \begin{aligned}
+      \lambda^* x .\text{ let } & [a'_\gamma, a_\gamma] = x, \\
+      &[a , b] = a_m \cdot a_\gamma \text{ in }\\
+      & E(b, a_{T_1}, a_{T_2}) \cdot [ a'_\gamma , a]      
+    \end{aligned}$\\
+    \\
+    \emph{assuming $a_m \cdot a_\gamma \vDash M$,  $a_{T_1} \cdot [a'_\gamma, !_\rho a_a] \vDash T_1$, $a_{T_2} \cdot [a'_\gamma, !_\pi a_b] \vDash T_2$, then we want to find $a_\bcase$, s.t.\ $a_\bcase\cdot [a'_\gamma, a_\gamma] \vDash \bcase(M, T_1, T_2)$.\\ 
+      \subitem if $a_m \cdot a_\gamma = [!_\rho a_a , \ulcorner true \urcorner]$, then $a_\bcase \cdot [a_\gamma , a'_\gamma] \leadsto E(\ulcorner true \urcorner, a_{T_1}, a_{T_2})\cdot [a'_
+      \gamma, !_\rho a_a] \leadsto a_{T_1} \cdot [a'_\gamma, !_\rho a_a]$
+      \subitem if $a_m \cdot a_\gamma = [!_\pi a_b, \ulcorner false \urcorner]$, then $\dots$} 
+  \end{itemize}
 \end{proof}
 
 \begin{claim}
@@ -143,24 +210,24 @@ The underlying set-theoretic functions are immediate. For the realisers, let
 \end{claim}
 
 \begin{proof}
-Given a term $\Gamma \vdash f \of{1} (x \of \tau \rho A \oplus \pi B) \to C$, we can derive another term\\ $\Gamma \vdash f^l \of{1} ( y \of {\tau \rho} A) \to C[\binl y /x]$:
-$$
-\infer[Lam]{\Gamma \vdash \lambda y \of{\tau\rho} A .\, f (\binl y) : (y \of {\tau \rho} A) \to C[\binl y / x]}{
-  \infer[App]{\Gamma , y \of{\tau\rho} A \vdash f(\binl y) \of{1} C[\binl y /x] }{
-    \infer[Weak]{\Gamma , y \of{0} A \vdash f \of{1} (x \of\tau \rho A \oplus \pi B) \to C}{
-      \Gamma \vdash f : (x \of \tau \rho A \oplus \pi B) \to C
-    }
-    &
-    \infer[inl]{0\Gamma, y \of\rho A \vdash \binl y \of{1}\rho A \oplus \pi B}{
-      \infer[var]{0\Gamma, y \of{1} \vdash y \of{1} A}{
-       \vdash 0\Gamma, y \of{1} A
+  Given a term $\Gamma \vdash f \of{1} (x \of \tau \rho A \oplus \pi B) \to C$, we can derive another term\\ $\Gamma \vdash f^l \of{1} ( y \of {\tau \rho} A) \to C[\binl y /x]$:
+  $$
+  \infer[Lam]{\Gamma \vdash \lambda y \of{\tau\rho} A .\, f (\binl y) : (y \of {\tau \rho} A) \to C[\binl y / x]}{
+    \infer[App]{\Gamma , y \of{\tau\rho} A \vdash f(\binl y) \of{1} C[\binl y /x] }{
+      \infer[Weak]{\Gamma , y \of{0} A \vdash f \of{1} (x \of\tau \rho A \oplus \pi B) \to C}{
+        \Gamma \vdash f : (x \of \tau \rho A \oplus \pi B) \to C
+      }
+      &
+      \infer[inl]{0\Gamma, y \of\rho A \vdash \binl y \of{1}\rho A \oplus \pi B}{
+        \infer[var]{0\Gamma, y \of{1} \vdash y \of{1} A}{
+          \vdash 0\Gamma, y \of{1} A
+        }
       }
     }
   }
-}
-$$
-Analogously, we can obtain $\Gamma \vdash f^r \of{1} (z \of{\tau\pi} B) \to C[\binr y /x]$.\\
-Now suppose we have terms $\Gamma \vdash l \of{1} (y \of{\tau \rho} A) \to C[\binl y /x]$ and $\Gamma \vdash r \of{1} (z \of{\tau \pi} B) \to C[\binr z / x]$. Using the isomorphism $\Lambda^\mathcal{L}$, we get judgements $ \Gamma, y \of{\tau \rho} A \vdash l^* : C[\binl y / x]$ and\\ $\Gamma , z \of {\tau \pi} B \vdash r^* : C[\binr z /x]$.
+  $$
+  Analogously, we can obtain $\Gamma \vdash f^r \of{1} (z \of{\tau\pi} B) \to C[\binr y /x]$.\\
+  Now suppose we have terms $\Gamma \vdash l \of{1} (y \of{\tau \rho} A) \to C[\binl y /x]$ and $\Gamma \vdash r \of{1} (z \of{\tau \pi} B) \to C[\binr z / x]$. Using the isomorphism $\Lambda^\mathcal{L}$, we get judgements $ \Gamma, y \of{\tau \rho} A \vdash l^* : C[\binl y / x]$ and\\ $\Gamma , z \of {\tau \pi} B \vdash r^* : C[\binr z /x]$.
 \end{proof}
 
 
@@ -197,22 +264,5 @@ Now we can focus on the relational part
 Suppose $A,B$ are discrete. Then $\rho A \oplus \pi B$ is also discrete.
 (Since coproducts preserve isos).
 
-\section{Spellchecking}
-\section{Polynomial functors in a linear setting}
-\subsection{Category of closed types and linear functions} 
-\subsection{Internal representation}
-\subsection{External representation (using adjoints)}
-\subsection{Properties of quantative polynomial functors}
 
-\section{Algebras for quantative polynomial functors}
-
-\subsection{$\mathbb{N}$}
-\subsection{Lists}
-\subsection{Trees}
-
-\subsection{Induction principle}
-
-\section{Rules for W-types in QTT}
-\section{Generalising to non-empty contexts}
-\section{Parametricity and W-types}
 \end{document}
