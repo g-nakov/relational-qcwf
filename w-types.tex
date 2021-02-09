@@ -78,10 +78,47 @@
 
 \section{Quantitative polynomial functors}
 \subsection{Category of closed types and linear functions}
+\label{sec:cat-closed-types}
 Let $\cC$ be the category of closed types and linear functions $f : (x \of {1} X) \to Y $ for which derivations in QTT exist. Composition of morphisms $\Gamma \vdash f \of{\sigma} (x \of{1} X) \to Y$ and $\Gamma \vdash g \of{\sigma} (y \of{1} Y) \to Z$ is given by ordinary function composition $\Gamma \vdash \lambda x \of{1} X. g(f(x)) \of{\sigma} (x \of{1} X) \to Z $.
 
 The linearity restriction on the morphisms does not lead to loss of expressiveness - functions with arbitrary resource annotations can be represented as linear ones via:
 
+\subsection{Category of closed types and linear functions in a nonempty context}
+
+Let $\Delta$ be an ``underlying context'', i.e.\ a context of the form $\Delta = 0\Gamma_0$ for some $\Gamma_0$. There is a category $\cC_\Delta$ where the objects are types $X$ such that $\Delta \vdash X \text{ type}$, and a morphism $X$ to $Y$ consists of pair $(\Gamma, f)$, where $\Gamma$ is a context such that $0\Gamma = \Delta$, and $\Gamma \vdash f : X \ofto{1} Y$.
+
+\begin{itemize}
+\item The identity morphism is given by $(\Delta, \lambda x . x)$;
+\item Composition of $(\Gamma_2, g)$ and $(\Gamma_1, f)$ is given by $(\Gamma_1 + \Gamma_2, \lambda x . f(g(x)))$.
+\end{itemize}
+
+This is a category since $0\Delta = \Delta$, and context addition is associative, and with $\Gamma + \Delta = \Delta + \Gamma = \Gamma$. Note that the category of $\cC$ closed types from \cref{sec:cat-closed-types} is a special case $\cC = \cC_{\emptyCtxt}$ where $\Delta = \emptyCtxt$, because the only $\Gamma$ with $0\Gamma = \emptyCtxt$ is $\Gamma = \emptyCtxt$.
+
+\begin{lemma}
+  Fix $\Delta$ as above, and let $\Delta \vdash A \text{ type}$ and $\Delta, x \of{0} A \vdash B[x] \text{ type}$. The operation $F(X) = (a \of{1} A) \otimes (Ba \overset{1}\to X)$ is a functor $\cC_\Delta \to \cC_\Delta$.
+\end{lemma}
+\begin{proof}
+  If $\Delta \vdash X \text{ type}$ then $\Delta \vdash F(X) \text{ type}$. On morphisms, we can define
+  \[
+    F(\Gamma, f) = (\Gamma, \lambda z . \letin{a, h}{z}{(a, \lambda b . f(h(b)))})
+  \]
+  as the following derivation shows:
+  \[
+    \infer{\Gamma \vdash \lambda z . \letin{a, h}{z}{(a, \lambda b . f(h(b)))} : F(X) \ofto{1} F(Y)}
+       {\infer{\Gamma, z \of{1} F(X) \vdash \letin{a, h}{z}{(a, \lambda b . f(h(b)))} : F(Y)}
+          { \infer{\Gamma, z \of{0} F(X), a \of{1} A, h \of{1} B[a] \ofto{1} X \vdash (a, \lambda b . f(h(b))) : F(Y)}{\infer{0\Gamma, z \of{0} F(X), a \of{1} A, h \of{0} B[a] \ofto{1} X \vdash a : A}{} & \quad \deduce{\cD}{\vdots}} & \quad \infer{0\Gamma, z \of{1} F(X) \vdash z : F(X)}{}}}
+      \]
+      where $\cD$ is the derivation
+      \[
+                 {
+            \infer{\Gamma, a \of{0} A, h \of{1} B[a] \ofto{1} X \vdash \lambda b . f(h(b)) : B[a] \ofto{1} Y}{ \infer{\Gamma, a \of{0} A, h \of{1} B[a] \ofto{1} X, b \of{1} B[a]  \vdash f(h(b)) : Y}{ {\Gamma, a \of{0} A, h \of{0} B[a] \ofto{1} X, b \of{0} B[a] \vdash f : X \ofto{1} Y} & \quad \deduce{\cD'}{\vdots} }} }
+        \]
+        weakened by $z \of{0} F(X)$, where again $\cD'$ is the derivation
+        \[
+\infer{0\Gamma, a \of{0} A, h \of{1} B[a] \ofto{1} X, b \of{1} B[a] \vdash h(b) : X}{\infer{0\Gamma, a \of{0} A, h \of{1} B[a] \ofto{1} X, b \of{0} B[a] \vdash h : B[a] \ofto{1} X}{} & \quad \infer{0\Gamma, a \of{0} A, h \of{1} B[a] \ofto{0} X, b \of{1} B[a] \vdash b : B[a]}{}}
+\]
+similarly weakened. This is functorial by the $\eta$-rules for functions and pairs.
+\end{proof}
 
 
 \subsection{Internal representation}

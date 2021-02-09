@@ -132,6 +132,12 @@ citestyle=numeric, giveninits=true]{biblatex}
 
 \newcommand{\terminal}[1]{\mathbf{1_{#1}}}
 \newcommand{\of}[1]{\overset{#1}{:}}
+\newcommand{\ofto}[1]{\overset{#1}{\to}}
+
+\newcommand{\emptyCtxt}{\diamond}
+\newcommand{\letin}[3]{\text{ let } (#1) = #2 \text{ in } #3 }
+
+
 
 \def\definecat#1{\ea\gdef\csname c#1\endcsname{\ensuremath{\mathcal{#1}}\xspace}}
 \foreachLetter{1}{27}{\definecat}
