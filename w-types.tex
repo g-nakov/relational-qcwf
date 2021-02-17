@@ -8,84 +8,40 @@
 \begin{document}
 \maketitle
 
-%Given a resource semiring $\bR$ with elements $s , t , u , \dots \in R$, define the following equivalence relation on the set $R^T \define \{0_\bR\} \cup \mu X. (R\setminus\{0_\bR\})  + X \times X$:
-%\begin{gather*}
-%  \tau \sim \rho \iff 
-%  \begin{cases}
-%     \tau = s,\ \rho = t \text{ and } s =_R t \\
-%     \tau = s,\ \rho = (\rho, \rho'') \text{ and } \tau \sim \rho' \text{ and } \tau \sim \rho''\\
-%     \tau = (\tau', \tau''),\ \rho = t \text{ and } \tau' \sim \rho \text { and } \tau'' \sim \rho \\
-%     \tau = (\tau', \tau''),\ \rho = (\rho', \rho'') \text{ and } \tau' \sim \rho' \text { and } \tau'' \sim \rho''      
-%  \end{cases}
-%\end{gather*}
-%\begin{claim}
-%  $R^T/\sim$ can be endowed with usage semiring structure.
-%\end{claim}
-%Adjust the $R-LCA$ to account for the tree structure by augmenting the operation $!_\tau : \algA \to \algA$ and the elements $W_{\pi\rho}$, $F_\rho$, $\delta_{\pi\rho}$:
-%\begin{gather*}
-%  !^T_\tau x \define 
-%  \begin{cases}
-%   [\ulcorner true \urcorner, E(!_s x, !_s x)]  &\text{ if } s = contract(\tau) \\
-%   [\ulcorner false \urcorner , E(!^T_{\tau'} x , !^T_{\tau''} x)],  &\text{ if } \langle\tau', \tau''\rangle = contract(\tau)\label{1}
-%  \end{cases}
-%\end{gather*}
-%
-%
-%The outermost pairing with Bool allows us to inspect/ the shape of the resource annotation internally within the BCI algebra.
-%
-%Futhermore, it is also possible to define $W_{\pi\rho}$, $F_\rho$, $\delta_{\pi\rho}$, but that involves quite a few subtleties.\\
-%
-%As an example usage of tree resource annotation, let's define the semantics of $\oplus$-types and check the rules are sound wrt. to it.\\
-%$\llbracket (A \oplus B)(\gamma)\rrbracket \define (|A(y)| \sqcup |B(y)|, \vDash_{A\oplus B(\gamma)} )$ , where \\
-%
-%$ a \vDash_{A \oplus B(\gamma)} (i , x)$ iff 
-%$\begin{aligned}
-%  &(\exists\, a_x \in \algA. a = [\ulcorner true \urcorner, a_x] \land a_x \vDash_{A(\gamma)} x \land \ulcorner true \urcorner \vDash_{Bool(\gamma)} i)\ \lor \\
-%  & (\exists\, b_x \in \algA. a = [\ulcorner false \urcorner, b_x] \land b_x \vDash_{B(\gamma)} x \land \ulcorner false \urcorner \vDash_{Bool(\gamma)} i) 
-%\end{aligned}$
-
-%\begin{figure}[!h]
-%\begin{align*}
-%  \infer[\oplus\text{-type}]{0\Gamma \vdash A \oplus B}{
-%    0\Gamma \vdash A &
-%    0\Gamma \vdash B} & & 
-%  \infer[\text{inl}]{\Gamma \vdash \mathbf{inl}\, M \of \sigma A \oplus B}{
-%      \Gamma \vdash M \of{\sigma} A} & &
-%    \infer[\text{inr}]{\Gamma \vdash \mathbf{inr}\, N \of \sigma A \oplus B}{
-%      \Gamma \vdash N \of{\sigma} B
-%    }
-%  \end{align*}
-%  \begin{gather*}
-%  0\Gamma, x \of{0} A \oplus B \vdash C \\
-%  \infer[\oplus \text{-elim}]{\Gamma' + \langle\rho, \pi\rangle \Gamma \vdash \mathbf{case}(M, T_a, T_b) \of{\sigma} C[M / x]}{
-%    \Gamma \vdash M \of \sigma A \oplus B &&
-%    \Gamma', a \of {\rho} A \vdash T_a \of{\sigma} C[\mathbf{inl}\,a/x] && 
-%    \Gamma', b \of{\pi} B \vdash T_b \of{\sigma} C[\mathbf{inr}\, b/x] &&
-%    0\Gamma = 0\Gamma'
-%  }
-%  \end{gather*}
-%  \begin{gather*}
-%    0\Gamma, x \of{0} A \oplus B \vdash C \\
-%    \infer[\oplus \text{-comp}]{\Gamma' + \langle\rho, \pi\rangle (a' \of{1} A)\vdash  \mathbf{case}(\mathbf{inl}(a'), T_a, T_b) = T_a[a'/a]}{
-%      a' \of{\tau} A,  a \of {\rho} A \vdash T_a \of{\sigma} C[\mathbf{inl}\,a/x] && 
-%      \Gamma', b \of{\pi} B \vdash T_b \of{\sigma} C[\mathbf{inr}\, b/x] &&
-%      0\Gamma = 0\Gamma'
-%    }
-%  \end{gather*}
-%\caption{Rules for $\oplus$-types}
-%\end{figure}
-%\newpage
-
 \section{Quantitative polynomial functors}
 \subsection{Category of closed types and linear functions}
 \label{sec:cat-closed-types}
-Let $\cC$ be the category of closed types and linear functions $f : (x \of {1} X) \to Y $ for which derivations in QTT exist. Composition of morphisms $\Gamma \vdash f \of{\sigma} (x \of{1} X) \to Y$ and $\Gamma \vdash g \of{\sigma} (y \of{1} Y) \to Z$ is given by ordinary function composition $\Gamma \vdash \lambda x \of{1} X. g(f(x)) \of{\sigma} (x \of{1} X) \to Z $.
+Let $\cC$ be the category of closed types and linear functions $f : (x \of {1} X) \to Y $ for which derivations in QTT exist. Composition of morphisms $\Gamma \vdash f \of{\sigma} (x \of{1} X) \to Y$ and $\Gamma \vdash g \of{\sigma} (y \of{1} Y) \to Z$ is given by ordinary function composition $\Gamma \vdash \lambda x \of{1} X. g(f(x)) \of{\sigma} (x \of{1} X) \to Z $.\\
 
-The linearity restriction on the morphisms does not lead to loss of expressiveness - functions with arbitrary resource annotations can be represented as linear ones via:
+The linearity restriction on the morphisms does not lead to loss of expressiveness - a function with arbitrary resource annotations can be represented as linear one via the exponential type $!_\rho A \define (a \of{\rho} A) \otimes I$.
+
+For an arbitrary $\Gamma \vdash f \of{1} X \ofto{\rho} Y$, the embedding is given by:
+\begin{align*}
+  f \mapsto \lambda z \of{1} (a \of{\rho}X) \otimes I . \text{ let } &(x,i) = z \text{ in} \\
+  &\text{let } * = i \text{ in } f(x) \of{1}  ((a \of{\rho}X) \otimes I) \ofto{1} Y
+\end{align*}
+Suppose $\cD$ stands for the derivation of $\Gamma \vdash f \of{1} X \ofto{\rho} Y$ and  $\cD_x$, $\cD_z$ and $\cD_i$ for the derivations of $0\Gamma, x \of{1} X \vdash x \of{1} X$ \, , $0\Gamma, z \of{1}(a \of{\rho}X) \otimes I \vdash z \of{1} (a \of{\rho}X) \otimes I$ and $0\Gamma , i \of{1} I \vdash i \of{1} I$ obtained by the applications of the $\tt{Var}$ rule.
+$$
+\infer{\Gamma \vdash \lambda z \of{1} (a \of{\rho}X) \otimes I).\text{let } (x, z) = z \text{ in }  \text{let } * = i \text{ in } f(x) \of{1} (a \of{\rho}X) \otimes I) \ofto{1} Y}{
+  \infer{\Gamma, z \of{1} (a \of{\rho}X) \otimes I) \vdash  \text{let } (x, z) = z \text{ in }  \text{let } * = i \text{ in } f(x) \of{1} Y}{
+    \cD_z 
+    &
+    \infer{\Gamma, x \of{\rho} X, i \of{1} I \vdash \text{let } * = i \text{ in } f(x) \of{1} Y}{
+      \cD_i
+      & 
+      \infer{\Gamma, x \of{\rho} X \vdash f(x) \of{1} Y}{
+        \cD_x
+        &
+        \cD
+      }
+    }
+  }
+}
+$$
 
 \subsection{Category of closed types and linear functions in a nonempty context}
 
-Let $\Delta$ be an ``underlying context'', i.e.\ a context of the form $\Delta = 0\Gamma_0$ for some $\Gamma_0$. There is a category $\cC_\Delta$ where the objects are types $X$ such that $\Delta \vdash X \text{ type}$, and a morphism $X$ to $Y$ consists of pair $(\Gamma, f)$, where $\Gamma$ is a context such that $0\Gamma = \Delta$, and $\Gamma \vdash f : X \ofto{1} Y$.
+Let $\Delta$ be an ``underlying context'', i.e.\ a context of the form $\Delta = 0\Gamma_0$ for some $\Gamma_0$. There is a category $\cC_\Delta$ where the objects are types   $X$ such that $\Delta \vdash X \text{ type}$, and a morphism $X$ to $Y$ consists of pair $(\Gamma, f)$, where $\Gamma$ is a context such that $0\Gamma = \Delta$, and $\Gamma \vdash f : X \ofto{1} Y$.
 
 \begin{itemize}
 \item The identity morphism is given by $(\Delta, \lambda x . x)$;
@@ -122,53 +78,124 @@ similarly weakened. This is functorial by the $\eta$-rules for functions and pai
 
 
 \subsection{Internal representation}
-Let $F$ be the polynomial functor mapping a type $X$ to $(a \of{1} A) \otimes (Ba \overset{1}\to X)$ and a function $f : X \overset{1}\to Y$ to $Ff : (a \of{1} A)\otimes(Ba \overset{1}{\to} X) \to (a \of{1} A)\otimes(Ba \overset{1}{\to } Y)$
+Let $F_0 : Obj(\cC) \to Obj(\cC) $ be the function mapping a type $X$ to the type $(a \of{1} A) \otimes (Ba \ofto{1} X)$. 
+\begin{claim}
+  $F_0$ can be extended to an endofunctor $F : \cC \to \cC$.
+\end{claim}
+Suppose $\Gamma \vdash f \of{1} X \ofto{1} Y$ is some morphism with a derivation $\cD_f$, then $Ff: (a \of{1} A) \otimes (Ba \ofto{1} X) \ofto{1} (a \of{1} A) \otimes (Ba \ofto{1} Y)$ is defined by precomposition with $f$ on the second component.\\
 
-If $D_f$ is the derivation of $f$, we show how to derive $Ff$. Given some $a : A$ and $h : B a \overset{1}\to X$, start by composing with $f$ and constructing a tensor product:
-
+By applying $\tt{Var}$ rule, we get the following:
+\begin{itemize}
+  \item a derivation $\cD_a$ of $0\Gamma, a \of{1} A, g \of{0} B a \ofto{1} X \vdash a \of{1} A$ 
+  \item a derivation $\cD_g$ of $0\Gamma, a \of{0} A, g \of{1} B a \to X \vdash g \of{1} B a \ofto{1} X$
+  \item a derivation $\cD_b$ of $0\Gamma, a \of{0} A, g \of{0} B a \to X, b \of{1} B a \vdash b \of{1} B a $ 
+  \item a derivation $\cD_z$ of $0\Gamma, z \of{1} (a \of{1} A) \otimes (B a \ofto{1} X) \vdash z \of{1} (a \of{1} A) \otimes (B a \ofto{1} X)$
+\end{itemize}
+Form an intermediate derivation $\cD$ by : 
 $$ 
-\infer{\Gamma, a \of{1} A, h \of{1} B a \overset{1}\to X \vdash (a, \lambda b \of{1} B a. f(g(b))) \of{1} (a \of{1} A)\otimes(B a \overset{1}\to Y)}{
-  \infer*{0\Gamma, a \of{1}, h \of{0} \dots \vdash a \of{1} A}{}
-  & 
-\infer*{\Gamma, a \of{0} A, h \of{1} B a \overset{1}\to X \vdash \lambda b \of{1} B a. f(g(b)) \of{1} (B a \overset{1}\to Y) }{
-  \infer[Var]{0\Gamma, a \of{0} A, h \of{1} B a \overset{1}\to X \vdash h \of{1} B a \overset{1} \to X}{
-      \vdash \Gamma, a \of{1} A, h \of{1} B a \overset{1}\to X
+\infer[\otimes-intro]{\Gamma, a \of{1} A, g \of{1} B a \overset{1}\to X \vdash (a, \lambda b \of{1} B a. f(g(b))) \of{1} F(Y)}{
+  \cD_a
+  &
+  \infer[Abs]{0\Gamma, a \of{0} A, g \of{1} B a \to X, f \of{1} X \ofto{1} Y \vdash \lambda b .f(g(b)) \of{1} Ba \ofto{1} Y }{
+    \infer[App]{0\Gamma, a \of{0} A, g \of{1} B a \to X, b \of{1} B a, f \of{1} X \ofto{1} Y \vdash f(g(b)) \of{1} Y }{
+      D_f 
+      &
+      \infer[App]{0\Gamma, a \of{0} A, g \of{1} B a \to X, b \of{1} B a \vdash g(b) \of{1} X }{
+        D_g & D_b
+      }
     }
-  & 
-  \infer{\Gamma \vdash f \of{1} X \overset{1}\to Y}{
-    D_f
   }
-}
 }
 $$
 
+and use it to get a final one for $Ff$:
 
-$$\infer[Lam]{\Gamma \vdash \lambda z \of {1} (a \of{1} A) \otimes (B a \to X). \text{ let } \dots \of{1} (a \of{1} A) \otimes (B a \overset{1} \to X) \overset{1}\longrightarrow (a \of{1} A) \otimes (B a \overset{1} \to Y)} {
-  \infer[\oplus-E]{\Gamma,  z \of{1}  (a \of{1} A) \otimes(B a \overset{1}\to X) \vdash \text{let } (x,u) = a \text{ in } (x , \lambda b \of{1} Ba. f(u(b))) \of{1} (a \of{1} A)\otimes(B a \overset{1}\to Y)   }{
-    \infer{0\Gamma, z \of{1} (a \of{1} A) \otimes (B a \overset{1}\to X) \vdash  z \of{1} \dots} {
-      \vdash \Gamma, z \of{1} (a \of{1} A) \otimes (B a \overset{1}\to X)
-    }
+$$\infer[Lam]{\Gamma \vdash \lambda z.\text{let } (x,u) = a \text{ in } (x , \lambda b \of{1} Ba. f(u(b))) \of{1} F(X) \ofto{1} F(Y)}{
+  \infer[\oplus-E]{\Gamma,  z \of{1} F(X)) \vdash \text{let } (x,u) = a \text{ in } (x , \lambda b \of{1} Ba. f(u(b))) \of{1} F(Y)}
+  {
+    \cD_z
     &
-    \Gamma, \dots \vdash (a, \lambda b \of{1} B a. f(g(b))) \of{1} (a \of{1} A)\otimes(B a \overset{1}\to Y)
+    \cD
   }
 }
 $$
-
+\begin{definition}
+  We will call any functor isomorphic to $F$ a quantitative polynomial functor.
+\end{definition}
 \subsection{External representation (using adjoints)}
-$(s \of{0} S) \otimes ((t \of{0} T) \otimes Id_{f(s) ,g(t) })) $
-Use QCwF structure... 
+
 \subsection{Generalising to non-empty contexts}
 \subsection{Properties of quantitative polynomial functors}
 
 \section{Algebras for QPFs}
+Recall that an algebra for an endofunctor $F : \cC \to \cC$ is a pair $(X, a)$, where $X$ is an object of $\cC$ and $a$ - a morphism $F(X) \to X$. A morphism between $F$-algebras is a map $f : X \to Y$, making the square commute:
+$$
+\begin{tikzcd}
+  F(X) \arrow[dd, "a"'] \arrow[rr, "F(f)"] &  & F(Y) \arrow[dd, "b"] \\
+  &  &                      \\
+  X \arrow[rr, "f"]                        &  & Y                   
+\end{tikzcd}
+$$
 
 \subsection{$\dN$}
-$f : 1 \to Bool$, Let $A \define Bool$ and $B = \mathbf{1}$, $P_f$. 
+Fix $A \define \mathbf{Bool}$ and $B$, such that $B(false) \define \emptyset$ and $B(true) \define I$ where $x \of{1} A \vdash B$ type.
 
-$P_f(X) \define (a \of{1} Bool)\otimes((b \in f^{-1}(a)) \to X)$
-Assume $N$, prove initiality.
+\textbf{Sketch}:
 
-If there is an initial algebra for $P_f$ there is a type $N$ that satisfies n.n. induction (requires dependent function).
+Observe that a function $\Gamma \vdash f\of{1} F_{A,B}(X) \ofto{1} X$ is equivalent to functions $\Gamma \vdash f_l \of{1} (\emptyset \ofto{1} X) \to X$ and $\Gamma \vdash f_r : (I \ofto{1} X) \to X$.
+
+Assuming that the type $\emptyset \ofto{1} X$ is a (sub?)singleton (or $\emptyset \ofto{1} X \cong I$, but maybe too strong), $f_l$ just encodes a choice of an element of $X$. Similarly, $I\ofto{1} X$ also encodes the same data, that is $ I \ofto{1} X \cong X$ (provable in QTT?).
+
+Essentially, an algebra for $F_{A,B}$ is a diagram $I \to X \to X$.\
+
+Now, we prove the following propositions:
+\begin{enumerate}
+  \item[(i)] Suppose $\Gamma \vdash \mathbf{Nat}$ type, then there exists an initial algebra for $F_{A,B}(\mathbf{Nat})$
+  \item[(ii)]  Suppose $\Gamma \vdash X$ type, such that there exists an initial algebra for $F_{A,B}(X)$, then $F_{A,B}(X) \cong \mathbf{Nat}$.
+\end{enumerate}
+
+Before embarking on proving that, let's examine a simpler construction:
+\paragraph{Interlude : Pseudobooleans as a constant QPF}
+Let $A \define \mathbf{Bool}$, $\Gamma, a \of{1} A \vdash B$ type, $B(a) \define \emptyset$.
+An algebra for this $F_{A,B}(X)$ is a diagram $X \leftarrow \{ * \} \to X$.\\
+
+Assume $\Gamma \vdash \mathbf{Bool}$ type. Then define $t(i) \define true$ and $f(i) \define false$ using the unit elimination.
+Let $(F_{A,B}(Y), m, n)$ be another algebra. Define $\phi(x) \define Elim(m(*), n(*), k)$, where $k : F_{A,B}(\mathbf{Bool}) \ofto{1} \mathbf{Bool}$ is the structure map. The squares commute by the computation rules for $\mathbf{Bool}$.
+$$\begin{tikzcd}
+  \mathbf{Bool} \arrow[dd, "\phi"] &  & \{*\} \arrow[ll, "t"'] \arrow[rr, "f"] \arrow[dd, equal] &  & \mathbf{Bool} \arrow[dd, "\phi"] \\
+  &  &                                                               &  &                                  \\
+  Y                                &  & \{*\} \arrow[ll, "m"] \arrow[rr, "n"']                        &  & Y                               
+\end{tikzcd}$$
+
+Conversely, assume that there is an initial algebra $(X, k : F_{A,B}{X} \to X)$. Designate some elements $t,f \in X$, such that $t \neq f$. For any other algebra represented diagrammatically $(Y, m : I \ofto{1} Y,  n : I \ofto{1} Y)$, we have that $\phi(t) = m$ and $\phi(f) = n$ by initiality. Define $Elim(m, n, x) \define \phi(x)$.\\
+
+
+Back to $\dN$, let $\mathbf{Nat}$ be defined as:
+\begin{figure}[h]
+  \begin{gather*}
+    \begin{align*}
+      \infer[\text{Nat}]{0\Gamma \vdash \mathbf{Nat}}{
+        0\Gamma \vdash A
+      } & & 
+      \infer{0\Gamma \vdash 0 \of{\sigma} \mathbf{Nat}}
+      { 0\Gamma \vdash
+      }
+      & &
+      \infer[\text{suc}]{\Gamma \vdash suc(N) \of{\sigma} \mathbf{Nat}}{
+        \Gamma \vdash N \of{\sigma} \mathbf{Nat}
+      }\\
+    \dots
+    \end{align*}
+  \end{gather*}
+\end{figure}
+
+$$
+\begin{tikzcd}
+  &  & X \arrow[dd, "\phi"] \arrow[rr, "\sigma"] &  & X \arrow[dd, "\phi"] \\
+  I \arrow[rru, "\mu"] \arrow[rrd, "z"] &  &                                           &  &                      \\
+  &  & Y \arrow[rr, "s"]                         &  & Y                   
+\end{tikzcd}$$
+
 \subsection{Lists}
 \subsection{Trees}
 
@@ -266,40 +293,6 @@ $\begin{aligned}
   Analogously, we can obtain $\Gamma \vdash f^r \of{1} (z \of{\tau\pi} B) \to C[\binr y /x]$.\\
   Now suppose we have terms $\Gamma \vdash l \of{1} (y \of{\tau \rho} A) \to C[\binl y /x]$ and $\Gamma \vdash r \of{1} (z \of{\tau \pi} B) \to C[\binr z / x]$. Using the isomorphism $\Lambda^\mathcal{L}$, we get judgements $ \Gamma, y \of{\tau \rho} A \vdash l^* : C[\binl y / x]$ and\\ $\Gamma , z \of {\tau \pi} B \vdash r^* : C[\binr z /x]$.
 \end{proof}
-
-
-%$case(\mathbf{inl}(x), T_a, T_b) = T_a$
-%\\$\Gamma \define x \of{\rho} A$, $\Gamma' \define x \of{0} A$.
-%WLOG, let's verify the soundness of $\mathbf{inl}$ and $\mathbf{case}$.\\
-%Given a realiser $a_M$ for $\forall \gamma \in |\Gamma|. M(\gamma)$, let $a_{\mathbf{inl}} \define \lambda^* a_\gamma. [\ulcorner true \urcorner, a_M \cdot a_\gamma]$
-%Given realisers $a_M$, $a_T$ and $b_T$, s.t:\\
-%$\forall \gamma \in |\Gamma|, a_\gamma \in \algA. a_\gamma \vDash_{\Gamma} y \implies a_M \cdot a_y \vDash_{A \oplus B (\gamma)} M(\gamma)$,\\
-%$\forall \gamma' \in |\Gamma'|, s \in |A(\gamma')|,  a'_\gamma \in \algA, a_s \in \algA. a'_\gamma \vDash_{\Gamma} \gamma' \land a_s \vDash_{A(\gamma)} s \implies a_T \cdot [a'_\gamma , !_\rho a_s] \vDash_{C(\gamma' , inl(s))} T_a(\gamma', s)$,\\
-%$\forall \gamma' \in |\Gamma'|, t \in |B(\gamma')|,  a'_\gamma \in \algA, a_t \in \algA. a'_\gamma \vDash_{\Gamma} \gamma' \land a_t \vDash_{B(\gamma)} t \implies b_T \cdot [a'_\gamma , !_\pi a_t] \vDash_{C(\gamma' , inr(t))} T_b(\gamma', t)$,\\
-%let $a_{case} \define
-%%\begin{aligned}
-%% W_{1 \langle\rho , \pi \rangle} \cdot (\lambda^* & a'_{!\gamma}\ a_{!\gamma}.  &&\comment{-- unwrap $(1  + \langle \rho , \pi \rangle) \Gamma$}\\
-%% &\text{let }[inj, a_m] = a_M \text{ in } &&\comment{-- pattern match on $M$}\\
-%% &\text{let }[collapsed, a_r] = a_{!\gamma} \text{ in } &&\comment{-- check if $\langle \pi , \rho \rangle$ collapsed}\\
-%% &\text{let }[c_T, inj'] = E([a_T , \ulcorner true \urcorner], [b_T , \ulcorner false \urcorner]) \cdot inj \text{ in } &&\comment{--}\\
-%% &\comment{-- check the right realiser and rewrap a boolean value}&&\\
-%% &\comment{-- so the linearity of inj is not violated }&&\\
-%% & c_T \cdot [D\cdot a'_{!\gamma} ,  &&\\
-%% & \quad\quad E(\lambda^*r\, m. , \lambda^*r . , ) \cdot collapsed \cdot a_r \cdot a_m]
-%%\end{aligned}$
-%\begin{aligned}
-%  W_{1 \langle\rho , \pi \rangle} \cdot (\lambda^* & a'_{!\gamma}\ a_{!\gamma}.  &&\comment{-- unwrap $(1  + \langle \rho , \pi \rangle) \Gamma$}\\
-%  & \dots F_{\langle \pi , \rho \rangle} \cdot !_{\langle \pi , \rho \rangle}(\lambda^* r. a_M \cdot r ) . a_{!\gamma} \dots &&
-%\end{aligned}$\\
-%Problem : We end up with something of the shape $!_{\langle \pi , \rho \rangle}([\ulcorner boolean \urcorner,  x ])$ and want to select the projection depending on the inner boolean value.
-Now we can focus on the relational part 
-\begin{align*}
-  (\rho A \oplus \pi B)(\gamma)_R &\define A(\gamma)_R \sqcup B(\gamma)_R\\
-  (\rho A \oplus \pi B)(\gamma)_{refl} &\define A(\gamma)_{refl} \sqcup B(\gamma)_{refl}\\
-  (\rho A \oplus \pi B)(\gamma)_{\sigma} &\define A(\gamma)_{\sigma} \sqcup B(\gamma)_{\sigma}, \quad \sigma \in \{\text{src}, \text{tgt}\}
-\end{align*}
-Suppose $A,B$ are discrete. Then $\rho A \oplus \pi B$ is also discrete.
-(Since coproducts preserve isos).
 
 
 \end{document}
