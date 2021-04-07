@@ -17,6 +17,14 @@ proj2 (Sig0 x y) = y
 
 infixr 0 -<>
 
+extractSingleton : {0 a : Type} -> {0 x : a} -> Sigma1 a (\ z => z = x) -<> a
+extractSingleton (Sig1 x Refl) = x
+
+0 extractSingletonExtractsSingleton : {0 a : Type} -> {0 x : a} -> (0 y : Sigma1 a (\ z => z = x)) ->
+                                    extractSingleton y = x
+extractSingletonExtractsSingleton (Sig1 x Refl) = Refl
+
+
 data Sum : (a : Type) -> (b : Type) -> Type where
   Inl : (1 x : a) -> Sum a b
   Inr : (1 y : b) -> Sum a b
@@ -34,6 +42,9 @@ fmapWith f g x False = g (x False)
 
 replace0 : (p : a -> Type) -> (0 _ : x = y) -> p x -<> p y
 replace0 p Refl r = r
+
+promoteEq : (0 _ : x = y) -> x = y
+promoteEq Refl = Refl
 
 congd2 : {t : Type} -> {s : t -> Type} ->
          (f : (x : t) -> s x -> u) -> {a : t} -> {b : t} -> {a' : s a} -> {b' : s b} ->
@@ -140,15 +151,17 @@ dist (With' c d) w =
     j u False = proj2 (dist d (u False))
 
         
-0 DepWith : (0 a : Type) -> (0 _ : a -> Type) -> Type
-DepWith a b = Sigma0 a (\x => (1 y : Bool) -> if y then (Sigma1 a (\z => z = x)) else b x)
+0 DepWith : (a : Type) -> (b : a -> Type) -> Type
+DepWith a b = Sigma0 a (\x => With (Sigma1 a (\z => z = x)) (b x)) -- (1 y : Bool) -> if y then (Sigma1 a (\z => z = x)) else b x)
 
+{-
 fmapDepWith : {a, a' : Type} -> {b : a -> Type} -> {b' : a' -> Type} ->
               (f : a -> a') -> (g : (0 x : a) -> b x -> b' (f x)) -> DepWith a b -> DepWith a' b'
 fmapDepWith f g (Sig0 x w) = Sig0 (f x) (\1 b => case b of
                                           True => let (Sig1 y Refl) = w True in Sig1 (f y) Refl
                                           False => let y = w False in g x y)
-                                          
+-}
+
 parameters(funext : {a : Type} -> {b : a -> Type} -> (f, g : (1 x : a) -> b x) -> (0 _ : (x : a) -> f x = g x) -> f = g)
 
   distW : {0 x : Type} -> {0 y : x -> Type} -> 
@@ -159,56 +172,47 @@ parameters(funext : {a : Type} -> {b : a -> Type} -> (f, g : (1 x : a) -> b x) -
   distW (Const' z) w = Sig0 w (\x => case x of 
                                    True => Sig1 w Refl
                                    False => w )
-  distW (Prod' c d) (Sig1 f g) = 
+  distW (Prod' c d) (Sig1 f g) =
     let (Sig0 f lf) = distW c f
         (Sig0 g lg) = distW d g
     in Sig0 (Sig1 f g) (\x => case x of
-                              True => let (Sig1 u Refl) = lf True 
-                                          (Sig1 v Refl) = lg True 
+                              True => let (Sig1 u Refl) = lf True
+                                          (Sig1 v Refl) = lg True
                                       in Sig1 (Sig1 u v) Refl
                               False => let u = lf False
                                            v = lg False
                                        in Sig1 u v)
-    
+
   distW (Sum' c d) (Inl f) =
     let (Sig0 x lf) = distW c f
-    in Sig0 (Inl x) (\b => case b of 
+    in Sig0 (Inl x) (\b => case b of
                            True => let (Sig1 u Refl) = lf True in Sig1 (Inl u) Refl
                            False => let u = lf False in u)
-  distW (Sum' c d) (Inr g) = 
+  distW (Sum' c d) (Inr g) =
     let (Sig0 x lg) = distW d g
-    in Sig0 (Inr x) (\b => case b of 
+    in Sig0 (Inr x) (\b => case b of
                            True => let (Sig1 u Refl) = lg True in Sig1 (Inr u) Refl
                            False => let u = lg False in u)
-  distW (With' c d) w = 
-      (k w)  where
-      
-      0 h : (w : With (qpf c (DepWith x y)) (qpf d (DepWith x y))) -> With (qpf c x) (qpf d x)
-      h w True with (distW c (w True))
-        h w True | (Sig0 z _)  = z
-      h w False with (distW d (w False))
-        h w False | (Sig0 z _) = z
-      
-      0 i : {a , b : Type} -> (0 u : With a b) -> 
-            (the (With a b) (\1 b => if b then u True else u False)) = u
-      i u = funext _ _ (\x => case x of 
-                           True => Refl
-                           False => Refl)
-      
-      j : (1 w : With (qpf c (DepWith x y)) (qpf d (DepWith x y))) ->
-          (1 b : Bool) -> 
-          if b then Sigma1 (With (qpf c x) (qpf d x)) (\z => z = (h w)) 
-               else With (lift c y ((h w) True)) (lift d y ((h w) False))
-      j w True = ?a -- Sig1 (h ?a) Refl
-      j w False = ?c
-      
-      k : (1 w : With (qpf c (DepWith x y)) (qpf d (DepWith x y))) ->
-           DepWith (With (qpf c x) (qpf d x)) 
-                 (\u => With (lift c y (u True)) (lift d y (u False)))
-      k w = Sig0 {a = With (qpf c x) (qpf d x)} 
-                 {b = (\u => With (lift c y (u True)) (lift d y (u False)))} 
-                 (h w) ?second
-    
+  distW (With' c d) w = Sig0 (h w) (j w)
+  where
+    0 h : With (qpf c (DepWith x y)) (qpf d (DepWith x y)) -<> With (qpf c x) (qpf d x)
+    h w True = proj0 (distW c (w True))
+    h w False = proj0 (distW d (w False))
+
+    h1 : With (qpf c (DepWith x y)) (qpf d (DepWith x y)) -<> With (qpf c x) (qpf d x)
+    h1 w True  = extractSingleton (proj2 (distW c (w True))  True)
+    h1 w False = extractSingleton (proj2 (distW d (w False)) True)
+
+    0 eq : (w : With (qpf c (DepWith x y)) (qpf d (DepWith x y))) -> h1 w = h w
+    eq w = funext (h1 w) (h w)
+                  (\ b => if b then extractSingletonExtractsSingleton (proj2 (distW c (w True)) True)
+                               else extractSingletonExtractsSingleton (proj2 (distW d (w False)) True))
+
+    j : (1 w : With (qpf c (DepWith x y)) (qpf d (DepWith x y))) ->
+        With (Sigma1 (With (qpf c x) (qpf d x)) (\z => z = h w)) (lift (With' c d) y (h w))
+    j w True = Sig1 (h1 w) (promoteEq (eq w))
+    j w False = \ b => if b then proj2 (distW c (w True)) False else proj2 (distW d (w False)) False
+
 {- namespace A
   parameters(funext : {a : Type} -> {b : a -> Type} -> (f, g : (1 x : a) -> b x) -> (0 _ : (x : a) -> f x = g x) -> f = g)
     data W : (0 d : Desc) -> Type where
