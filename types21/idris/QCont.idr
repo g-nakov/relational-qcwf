@@ -4,10 +4,13 @@ import Linear.Types
 import Linear.Equality
 import FunExt
 
-parameters (a : Type, b : a -> Type)
+import Syntax.PreorderReasoning
+
+
+parameters (S : Type, P : S -> Type)
 
   F : Type -> Type
-  F x = Sigma1 a (\ z => b z -<> x)
+  F x = Sigma1 S (\ s => P s -<> x)
   
   Fmap : (f : x -<> y) -> (F x -<> F y)
   Fmap f (a # h) = a # (\ z => f (h z))
@@ -16,43 +19,67 @@ parameters (a : Type, b : a -> Type)
     Con : F W -<> W
 
   fold : (F x -<> x) -> W -<> x -- uses alg twice
-  fold alg (Con (a # h)) = alg (a # \z => fold alg (h z))
-
-  uniqueness : (alg : F x -<> x) -> (h : W -<> x) -> ((y : F W) -> h (Con y) = alg (Fmap h y)) -> (x : W) -> h x = fold alg x
-  uniqueness alg h commutes (Con (x # g)) =
-    trans (commutes (x # g))
-          (cong (\ z => alg (x # z)) (funext _ _ pointwise))
+  fold alg (Con w) = alg (Fmap (fold alg) w)   
+  
+  uniqueness : (alg : F x -<> x) -> 
+               (g : W -<> x) -> 
+               ((y : F W) -> g (Con y) = alg (Fmap g y)) ->
+               (w : W) -> g w = fold alg w
+  uniqueness alg g commutes (Con (s # h)) =
+    trans (commutes (s # h))
+          (cong (\ h => alg (s # h)) (funext _ _ pointwise))
     where
-      pointwise : (y : b x) -> h (g y) = fold alg (g y)
-      pointwise y = uniqueness alg h commutes (g y)
-
-{-
-  induction' : (p : W -> Type) ->
-               (step : (1 z : a) -> (0 h : b z -<> W) -> (1 ih : (1 y : b z) -> p (h y)) -> p (Con (Sig1 z h))) ->
-               (1 x : W) -> p x -- uses step twice
-  induction' p step (Con (Sig1 z h)) = step z h (\ y => induction' p step (h y))
--}
+      pointwise : (p : P s) -> g (h p) = fold alg (h p)
+      pointwise p = uniqueness alg g commutes (h p)
 
 
-  indAlg : (0 p : W -> Type) -> let W' = Sigma0 W p in
-           (1 step : (1 z : a) -> (0 h : b z -<> W) -> (1 ih : (1 y : b z) -> p (h y)) -> p (Con (z # h))) ->
+  indAlg : (0 Q : W -> Type) -> 
+           let W' = Sigma0 W Q in
+           (1 m : (1 s : S) -> 
+                     (0 h : P s -<> W) -> 
+                     ((1 p : P s) -> Q (h p)) -<> 
+                     Q (Con (s # h))) ->
            F W' -<> W'
-  indAlg p step (z # h) = (Con ( z # \ y => fst (h y))) # (step z _ (\ y => snd (h y)))
+  indAlg q m (s # h') = Con (Fmap fst (s # h')) # m s _ (\p => snd (h' p))
+  
+  
+  induction : (0 Q : W -> Type) ->
+              (m : (1 s : S) -> 
+                   (0 h : P s -<> W) -> 
+                   ((1 p : P s) -> Q (h p)) -<> 
+                   Q (Con (s # h))) ->
+              (1 w : W) -> Q w
+  induction q m w = replace0 q (sym (eq w)) (foldIt w) 
+    where
+      foldIt : (1 w : W) -> q (fst (fold (indAlg q m) w)) -- uses step twice
+      foldIt w = snd (fold (indAlg q m) w)
+    
+      0 eq : (0 w : W) -> w = fst (fold (indAlg q m) w)
+      eq (Con (s # h)) = cong (\ z => Con (s # z)) (funext h _ ih)
+        where
+          0 ih : (p : P s) -> h p = fst (fold (indAlg q m) (h p))
+          ih p = eq (h p)
+   
+  initiality : (induction :(0 Q : W -> Type) -> 
+                           (m : (1 s : S) -> 
+                                (0 h : P s -<> W) -> 
+                                ((1 p : P s) -> Q (h p)) -<> 
+                                Q (Con (s # h))) ->
+                           (1 w : W) -> Q w) ->
+                (alg : F x -<> x) ->
+                W -<> x
+  initiality induction alg = induction (\_ => x) (\s, _, ih => alg (s # ih)) 
 
-  induction : (0 p : W -> Type) ->
-              (step : (1 z : a) -> (0 h : b z -<> W) -> (1 ih : (1 y : b z) -> p (h y)) -> p (Con (z # h))) ->
-              (1 x : W) -> p x
-  induction p step x = replace0 p (sym (eq x)) (foldIt x) where
-    foldIt : (1 x : W) -> p (fst (fold (indAlg p step) x)) -- uses step twice
-    foldIt x = snd (fold (indAlg p step) x)
-    0 eq : (0 x : W) -> x = fst (fold (indAlg p step) x)
-    eq (Con (x #  h)) = cong (\ z => Con (x # z)) (funext h _ ih)
-      where
-        0 ih : (y : b x) -> h y = fst (fold (indAlg p step) (h y))
-        ih y = eq (h y)
-
-  initiality : (induction :(0 p : W -> Type) -> (step : (1 z : a) -> (0 h : b z -<> W) -> 
-                           (1 ih : (1 y : b z) -> p (h y)) -> p (Con (z # h))) ->
-                           (1 x : W) -> p x) ->
-                (alg : F x -<> x) -> W -<> x
-  initiality induction alg w = induction (\_ => x) (\z, ih, pz => alg (z # pz)) w  
+  
+  indComp : (0 Q : W -> Type) ->
+            (m : (1 s : S) -> 
+                 (0 h : P s -<> W) -> 
+                 ((1 p : P s) -> Q (h p)) -<> 
+                 Q (Con (s # h))) ->
+            (1 s : S) -> 
+            (1 h : P s -<> W) ->
+            induction Q m (Con (s # h)) = m s h (\p => induction Q m (h p)) 
+  indComp q m s h = Calc $
+    |~ induction q m (Con (s # h))
+    ~~ q (fst (fold (indAlg q m) (Con (s # h)))) ...(?la)
+    ~~ m s h (\p => induction q m (h p))  ...(?last_step)
