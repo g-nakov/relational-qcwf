@@ -1,5 +1,7 @@
-## push script
-push.sh
+#idris
+*.idr~
+*.ttm
+*.ttc
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

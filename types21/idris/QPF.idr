@@ -223,8 +223,9 @@ namespace TensorInduction
   
   induction : {d : Desc} -> {0 p : W d -> Type} ->
               (step : (1 w : Sigma0 (qpf d (W d)) (lift d p)) -> p (Con (fst w))) ->
-              (w : W d) -> p w
-  induction step w = 
+              (1 w : W d) -> p w
+  induction step w = ?ind_hole
+{-  
     let pw = snd (h w)
     in replace0 {x = fst (h w)} p (eq w) pw where
     
@@ -233,7 +234,13 @@ namespace TensorInduction
                       
     0 eq : (w : W d) -> fst (h w) = w
     eq w = let z = uniq Con (\w => fst (fold d (pAlg step) w)) ?a4 w 
-           in ?b    
+           in ?b
+-}           
+    
+  indComp : {d : Desc} -> {0 p : W d -> Type} ->
+            (step : (1 w : Sigma0 (qpf d (W d)) (lift d p)) -> p (Con (fst w))) ->
+            (1 w : qpf d (W d)) ->
+            induction {p = p} step (Con w) = step (w # induction {p = p} step ?A)
     
 namespace WithInduction
   
