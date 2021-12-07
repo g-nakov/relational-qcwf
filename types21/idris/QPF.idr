@@ -10,13 +10,15 @@ data Desc : Type where
   Prod' : Desc -> Desc -> Desc
   Sum' : Desc -> Desc -> Desc
   With' : Desc -> Desc -> Desc
+  Arr' : Type -> Desc -> Desc
   
 0 qpf : Desc -> Type -> Type
 qpf Id' x = x
-qpf (Const' x) _  =  x
+qpf (Const' a) _  =  a
 qpf (Prod' f g) x = Pair1 (qpf f x) (qpf g x)
 qpf (Sum' f g) x = Sum (qpf f x) (qpf g x)
 qpf (With' f g) x = With (qpf f x) (qpf g x)
+qpf (Arr' a f) x = a -<> qpf f x
 
 0 lift : (d : Desc) -> (p : x -> Type) -> qpf d x -> Type
 lift Id' p f = p f
@@ -25,6 +27,7 @@ lift (Prod' c d) p (f #  g) = LPair (lift c p f) (lift d p g)
 lift (Sum' c d) p (Inl f) = lift c p f
 lift (Sum' c d) p (Inr g) = lift d p g
 lift (With' c d) p f = With (lift c p (f True)) (lift d p (f False))
+lift (Arr' a c) p f = (1 y : a) -> lift c p (f y)
 
 
 dist : {0 x : Type} -> {0 y : x -> Type} -> 
@@ -46,12 +49,19 @@ dist (With' c d) w =
     0 h : With (qpf c (Sigma0 x y)) (qpf d (Sigma0 x y)) -> With (qpf c x) (qpf d x) 
     h u True  = fst (dist c (u True))
     h u False = fst (dist d (u False))
-    
+
     j : (1 u : With (qpf c (Sigma0 x y)) (qpf d (Sigma0 x y))) -> 
         With (lift c y (h u True)) (lift d y (h u False))
     j u True  = snd (dist c (u True))
     j u False = snd (dist d (u False))
+dist (Arr' a c) w =
+   (h w) # (j w) where
+    0 h : (a -<> qpf c (Sigma0 x y)) -> (a -<> qpf c x)
+    h g z = fst (dist c (g z))
 
+    j : (1 g : a -<> qpf c (Sigma0 x y)) ->
+        ((1 z : a) -> (lift c y (h g z)))
+    j g z = snd (dist c (g z))
 
 distW : {0 x : Type} -> {0 y : x -> Type} -> 
         (d : Desc) -> qpf d (DWith x y) -<> DWith (qpf d x) (lift d y) 
@@ -72,7 +82,6 @@ distW (Sum' c d) (Inr g) =
   let (x # lg) = distW d g
   in (Inr x) # (\b => if b then (let (u # Refl) = lg True in (Inr u) # Refl)
                            else (let u = lg False in u))
-                                                    
 distW (With' c d) w = (h w) # (j w)
 where
   0 h : With (qpf c (DWith x y)) (qpf d (DWith x y)) -<> With (qpf c x) (qpf d x)
@@ -92,18 +101,21 @@ where
       With (Sigma1 (With (qpf c x) (qpf d x)) (\z => z = h w)) (lift (With' c d) y (h w))
   j w True = (h1 w) # (promoteEq (eq w))
   j w False = \ b => if b then snd (distW c (w True)) False else snd (distW d (w False)) False
+distW (Arr' a f) w = ?arrDistW
+
 
 data W : (0 u : Desc) -> Type where
   Con : qpf u (W u)  -<> W u
 
 fmap : (d : Desc) -> (f : a -<> b) -> qpf d a -<> qpf d b
-fmap Id' f x = f x 
+fmap Id' f x = f x
 fmap (Const' _) _ x = x
-fmap (Prod' c d) f x = bimap (fmap c f) (fmap d f) x 
+fmap (Prod' c d) f x = bimap (fmap c f) (fmap d f) x
 fmap (Sum' c d) f x = bimap (fmap c f) (fmap d f) x
 fmap (With' c d) f x = bimap (fmap c f) (fmap d f) x
+fmap (Arr' a c) f x = \ y => fmap c f (x y)
 
-0 fmap_id : {c : Desc} -> {d : Desc} -> 
+0 fmap_id : {c : Desc} -> {d : Desc} ->
             (1 x : qpf d (W c)) -> x = fmap {b = W c} d (\1 x => x) x
 fmap_id {d = Id'} x = Refl
 fmap_id {d = (Const' _)} _ = Refl
@@ -111,6 +123,7 @@ fmap_id {d = (Prod' c d)} (x # y) = lcong2 (#) (fmap_id x) (fmap_id y)
 fmap_id {d = (Sum' c d)} (Inl x) = lcong Inl (fmap_id x)
 fmap_id {d = (Sum' c d)} (Inr y) = lcong Inr (fmap_id y)
 fmap_id {d = (With' c d)} x = funext _ _ (\b => if b then fmap_id (x True) else fmap_id (x False))
+fmap_id {d = (Arr' a c)} g = funext _ _ (\ y => fmap_id (g y))
 
 mutual
   fold_h : {c : Desc} -> (d : Desc) -> (qpf c x -<> x) -> qpf d (W c) -<> qpf d x
@@ -119,7 +132,8 @@ mutual
   fold_h (Prod' c d) alg w = bimap (fold_h c alg) (fold_h d alg) w
   fold_h (Sum' c d) alg w = bimap (fold_h c alg) (fold_h d alg) w
   fold_h (With' c d) alg w = with With.bimap (bimap (fold_h c alg) (fold_h d alg) w)
-  
+  fold_h (Arr' a c) alg w = \ y => fold_h c alg (w y)
+
   fold : (d : Desc) -> (qpf d x -<> x) -> W d -<> x
   fold d alg (Con w) = alg (fold_h d alg w)
 
@@ -140,6 +154,8 @@ mutual
   uniq_h (With' c' d') h calg commutes z = 
     funext _ _ (\x => if x then uniq_h c' h calg commutes (z True)
                            else uniq_h d' h calg commutes (z False))
+  uniq_h (Arr' a c') h calg commutes z = funext _ _ (\ y => uniq_h c' h calg commutes (z y))
+
   0 uniq : {d : Desc} -> 
            (alg : qpf d x -<> x) -> 
            (h : W d -<> x) -> 
@@ -147,36 +163,39 @@ mutual
            (w : W d) -> h w = fold d alg w
   uniq alg h commutes (Con y) = 
     trans (commutes y) (lcong alg (uniq_h d h alg commutes y))
-    
+
+
+
 0 foldCon_id : (1 w : W d) -> w = fold d Con w
 foldCon_id w = uniq Con (\x => x) (\y => lcong Con (fmap_id y)) w
        
 0 foldCommutes : (d : Desc) -> 
       (alg : qpf d x -<> x) -> 
       (1 w : qpf d (W d)) ->  
-      let h = fold d alg 
+      let h = fold d alg
       in h (Con w) = alg (fmap d h w)
 foldCommutes Id' alg (Con x) = Refl
 foldCommutes (Const' _) alg x = Refl
-foldCommutes (Prod' c d) alg (x # y) = 
+foldCommutes (Prod' c d) alg (x # y) =
   let commutesC = uniq_h c (fold (Prod' c d) alg) alg (foldCommutes (Prod' c d) alg) x
       commutesD = uniq_h d (fold (Prod' c d) alg) alg (foldCommutes (Prod' c d) alg) y
   in lcong alg (lcong2 (#) (sym commutesC) (sym commutesD))
-
 foldCommutes (Sum' c d) alg (Inl x) =
   let commutesC = uniq_h c (fold (Sum' c d) alg) alg (foldCommutes (Sum' c d) alg) x
   in lcong alg (lcong Inl (sym commutesC))
-  
 foldCommutes (Sum' c d) alg (Inr y) =
   let commutesD = uniq_h d (fold (Sum' c d) alg) alg (foldCommutes (Sum' c d) alg) y
   in lcong alg (lcong Inr (sym commutesD))
-  
-foldCommutes (With' c d) alg x = 
-  lcong alg (funext _ _ 
-    (\b => if b then sym (uniq_h c (fold (With' c d) alg) alg (foldCommutes (With' c d) alg) (x True)) 
+foldCommutes (With' c d) alg x =
+  lcong alg (funext _ _
+    (\b => if b then sym (uniq_h c (fold (With' c d) alg) alg (foldCommutes (With' c d) alg) (x True))
                 else sym (uniq_h d (fold (With' c d) alg) alg (foldCommutes (With' c d) alg) (x False))
      ))
-  
+foldCommutes (Arr' a c) alg g =
+   lcong alg (funext (\ z => fold_h {c = Arr' a c} c alg (g z)) (\ z => fmap c (fold (Arr' a c) alg) (g z)) (\ y => sym (uniq_h {c = Arr' a c} c (fold (Arr' a c) alg) alg (foldCommutes (Arr' a c) alg) (g y))))
+
+
+
 namespace TensorInduction
             
   pAlg : {d : Desc} -> {0 p : W d -> Type} ->
@@ -199,6 +218,7 @@ namespace TensorInduction
          ?pAlg_Prod --need inspect and lemma for dist (fst (dist c x) ~ x)
   pAlgCommutes {d = (Sum' x y)} {step = step} w = ?pAlg_Sum
   pAlgCommutes {d = (With' x y)} {step = step} w = ?pAlg_With
+  pAlgCommutes {d = (Arr' a c)} {step = step} w = ?pAlg_Arr 
   
   
   induction : {d : Desc} -> {0 p : W d -> Type} ->
