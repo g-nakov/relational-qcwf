@@ -93,7 +93,7 @@ where
   h1 w False = extractSingleton (snd (distW d (w False)) True)
 
   0 eq : (w : With (qpf c (DWith x y)) (qpf d (DWith x y))) -> h1 w = h w
-  eq w = funext (h1 w) (h w)
+  eq w = funext
                 (\ b => if b then extractSingletonExtractsSingleton (snd (distW c (w True)) True)
                              else extractSingletonExtractsSingleton (snd (distW d (w False)) True))
 
@@ -122,8 +122,8 @@ fmap_id {d = (Const' _)} _ = Refl
 fmap_id {d = (Prod' c d)} (x # y) = lcong2 (#) (fmap_id x) (fmap_id y)
 fmap_id {d = (Sum' c d)} (Inl x) = lcong Inl (fmap_id x)
 fmap_id {d = (Sum' c d)} (Inr y) = lcong Inr (fmap_id y)
-fmap_id {d = (With' c d)} x = funext _ _ (\b => if b then fmap_id (x True) else fmap_id (x False))
-fmap_id {d = (Arr' a c)} g = funext _ _ (\ y => fmap_id (g y))
+fmap_id {d = (With' c d)} x = funext (\b => if b then fmap_id (x True) else fmap_id (x False))
+fmap_id {d = (Arr' a c)} g = funext (\ y => fmap_id (g y))
 
 mutual
   fold_h : {c : Desc} -> (d : Desc) -> (qpf c x -<> x) -> qpf d (W c) -<> qpf d x
@@ -152,9 +152,9 @@ mutual
   uniq_h (Sum' c' d') h calg commutes (Inl f') = lcong Inl (uniq_h c' h calg commutes f')  
   uniq_h (Sum' c' d') h calg commutes (Inr g') = lcong Inr (uniq_h d' h calg commutes g') 
   uniq_h (With' c' d') h calg commutes z = 
-    funext _ _ (\x => if x then uniq_h c' h calg commutes (z True)
-                           else uniq_h d' h calg commutes (z False))
-  uniq_h (Arr' a c') h calg commutes z = funext _ _ (\ y => uniq_h c' h calg commutes (z y))
+    funext (\x => if x then uniq_h c' h calg commutes (z True)
+                       else uniq_h d' h calg commutes (z False))
+  uniq_h (Arr' a c') h calg commutes z = funext (\ y => uniq_h c' h calg commutes (z y))
 
   0 uniq : {d : Desc} -> 
            (alg : qpf d x -<> x) -> 
@@ -187,12 +187,12 @@ foldCommutes (Sum' c d) alg (Inr y) =
   let commutesD = uniq_h d (fold (Sum' c d) alg) alg (foldCommutes (Sum' c d) alg) y
   in lcong alg (lcong Inr (sym commutesD))
 foldCommutes (With' c d) alg x =
-  lcong alg (funext _ _
+  lcong alg (funext
     (\b => if b then sym (uniq_h c (fold (With' c d) alg) alg (foldCommutes (With' c d) alg) (x True))
                 else sym (uniq_h d (fold (With' c d) alg) alg (foldCommutes (With' c d) alg) (x False))
      ))
 foldCommutes (Arr' a c) alg g =
-   lcong alg (funext (\ z => fold_h {c = Arr' a c} c alg (g z)) (\ z => fmap c (fold (Arr' a c) alg) (g z)) (\ y => sym (uniq_h {c = Arr' a c} c (fold (Arr' a c) alg) alg (foldCommutes (Arr' a c) alg) (g y))))
+   lcong alg (funext (\ y => sym (uniq_h {c = Arr' a c} c (fold (Arr' a c) alg) alg (foldCommutes (Arr' a c) alg) (g y))))
 
 
 
@@ -236,12 +236,14 @@ namespace TensorInduction
     eq w = let z = uniq Con (\w => fst (fold d (pAlg step) w)) ?a4 w 
            in ?b
 -}           
-    
+
+{-    
   indComp : {d : Desc} -> {0 p : W d -> Type} ->
             (step : (1 w : Sigma0 (qpf d (W d)) (lift d p)) -> p (Con (fst w))) ->
             (1 w : qpf d (W d)) ->
             induction {p = p} step (Con w) = step (w # induction {p = p} step ?A)
-    
+-}
+      
 namespace WithInduction
   
   withAlg : (p : x -> Type) -> 
